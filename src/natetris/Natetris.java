@@ -5,7 +5,13 @@ import java.awt.BorderLayout;
 import javax.swing.JFrame;
 
 public class Natetris extends JFrame {
+
+	private static final long serialVersionUID = 6321156896206333624L;
 	
+	/**
+	 * The game board
+	 */
+	private Board board;
 	
 	/**
 	 * Creates a new instance of the game. 
@@ -21,10 +27,18 @@ public class Natetris extends JFrame {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setResizable(false);
 		
+		this.board = new Board(this);
+		
+		add(board, BorderLayout.WEST);
+		
 		pack();
 		setVisible(true);
 	}
 	
+	/**
+	 * The main game loop. 
+	 * This will refresh the JPanels and handle the game's logic. 
+	 */
 	public void startGame() {
 		
 	}
