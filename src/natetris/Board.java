@@ -3,6 +3,8 @@ package natetris;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 
 import javax.swing.JPanel;
 
@@ -30,19 +32,19 @@ public class Board extends JPanel {
 	 * As this is a 2D game, the board will have only 4 borders: two placed -
 	 * vertically and two placed horizontally, producing, then, a rectangle.
 	 */
-	public static final int BORDER_DISTANCE = 10;
+	public static final int BORDER_WIDTH = 10;
 	
 	/**
 	 * The dimensions of the board panel
 	 */
-	public static final int PANEL_WIDTH = (BORDER_DISTANCE * 2) + (COL_COUNT * TILE_SIZE);
-	public static final int PANEL_HEIGHT = (BORDER_DISTANCE * 2) + (ROW_COUNT * TILE_SIZE);
+	public static final int PANEL_WIDTH = (BORDER_WIDTH * 2) + (COL_COUNT * TILE_SIZE);
+	public static final int PANEL_HEIGHT = (BORDER_WIDTH * 2) + (ROW_COUNT * TILE_SIZE);
 	
 	/**
 	 * The dimensions of the actual shown board
 	 */
-	public static final int BOARD_WIDTH = PANEL_WIDTH - (BORDER_DISTANCE * 2);
-	public static final int BOARD_HEIGHT = PANEL_HEIGHT - (BORDER_DISTANCE * 2);
+	public static final int BOARD_WIDTH = PANEL_WIDTH - (BORDER_WIDTH * 2);
+	public static final int BOARD_HEIGHT = PANEL_HEIGHT - (BORDER_WIDTH * 2);
 	
 	/**
 	 * The group of tiles that compose the entire board
@@ -57,7 +59,6 @@ public class Board extends JPanel {
 	public Board(Natetris natetris) {
 		this.natetris = natetris;
 		this.tiles = new Tile[ROW_COUNT * COL_COUNT];
-		System.out.println((BORDER_DISTANCE * 2) + (COL_COUNT * TILE_SIZE));
 		setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
 		setBackground(Color.BLACK);
 	}
@@ -69,23 +70,21 @@ public class Board extends JPanel {
 		g.setColor(Color.WHITE);
 		
 		/*
-		 * draws the board borders
-		 * FIXME: borders not equally sized 
+		 * draws the board itself, which is basically made of squares.
 		 */
-		g.drawLine(BORDER_DISTANCE, BORDER_DISTANCE, BOARD_WIDTH, BORDER_DISTANCE); // north horizontal line (^)
-		g.drawLine(BORDER_DISTANCE, BORDER_DISTANCE, BORDER_DISTANCE, BOARD_HEIGHT); // west vertical line (<)
-		g.drawLine(BOARD_WIDTH, BOARD_HEIGHT, BORDER_DISTANCE, BOARD_HEIGHT); // south horizontal line (v)
-		g.drawLine(BOARD_WIDTH, BORDER_DISTANCE, BOARD_WIDTH, BOARD_HEIGHT); // east vertical line (>)
-		
-		/*
-		 * TODO: draws the board itself, which is basically made of squares.
-		 */
-		g.setColor(Color.GRAY);
-		for (int row = 1; row <= ROW_COUNT; row++) {
-			for (int col = 1; col <= COL_COUNT; col++) {
-			}
+		g.setColor(Color.DARK_GRAY);
+		for (int x = 1; x < ROW_COUNT; x++) {
+			g.drawLine(BORDER_WIDTH, (x * TILE_SIZE) + BORDER_WIDTH , BOARD_WIDTH + BORDER_WIDTH, (x * TILE_SIZE) + BORDER_WIDTH);
+		}
+		for (int y = 1; y < COL_COUNT; y++) {
+			g.drawLine((y * TILE_SIZE) + BORDER_WIDTH, BORDER_WIDTH, (y * TILE_SIZE) + BORDER_WIDTH, BOARD_HEIGHT + BORDER_WIDTH);
 		}
 		
+		/*
+		 * draws the board borders
+		 */
+		g.setColor(Color.WHITE);
+		g.drawRect(BORDER_WIDTH, BORDER_WIDTH, BOARD_WIDTH, BOARD_HEIGHT);
 	}
 	
 }
