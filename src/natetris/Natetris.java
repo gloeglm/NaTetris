@@ -14,6 +14,19 @@ public class Natetris extends JFrame {
 	private Board board;
 	
 	/**
+	 *	The information panel, containing general info for the player
+	 */
+	private InfoPanel infoPanel;
+	
+	/**
+	 * Game control variables.
+	 * isNewGame represents if the game hasn't started yet. Occurs only when the game is launched
+	 */
+	private boolean isNewGame;
+	private boolean isGamePaused;
+	private boolean isGameOver;
+	
+	/**
 	 * Creates a new instance of the game. 
 	 * This sets the properties of the JFrame that will hold the game section and
 	 * adds a key listener to it.
@@ -28,8 +41,10 @@ public class Natetris extends JFrame {
 		setResizable(false);
 		
 		this.board = new Board(this);
+		this.infoPanel = new InfoPanel(this);
 		
 		add(board, BorderLayout.WEST);
+		add(infoPanel, BorderLayout.EAST);
 		
 		pack();
 		setVisible(true);
@@ -43,6 +58,30 @@ public class Natetris extends JFrame {
 		
 	}
 	
+	public boolean isGamePaused() {
+		return isGamePaused;
+	}
+
+	public void setGamePaused(boolean isGamePaused) {
+		this.isGamePaused = isGamePaused;
+	}
+
+	public boolean isGameOver() {
+		return isGameOver;
+	}
+
+	public void setGameOver(boolean isGameOver) {
+		this.isGameOver = isGameOver;
+	}
+
+	public boolean isNewGame() {
+		return isNewGame;
+	}
+
+	public void setNewGame(boolean isNewGame) {
+		this.isNewGame = isNewGame;
+	}
+
 	public static void main(String[] args) {
 		Natetris natetris = new Natetris();
 		natetris.startGame();
