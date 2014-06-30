@@ -48,8 +48,8 @@ public class Board extends JPanel {
 	/**
 	 * The central position of the game board
 	 */
-	public static final int CENTER_X = PANEL_WIDTH / 2;
-	public static final int CENTER_Y = PANEL_HEIGHT / 2;
+	public static final int CENTER_X = BOARD_WIDTH / 2;
+	public static final int CENTER_Y = BOARD_HEIGHT / 2;
 	
 	/**
 	 * Fonts used 
@@ -77,18 +77,23 @@ public class Board extends JPanel {
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
+
+		/*
+		 * this enhances drawing methods readability, by considering the 
+		 * 0,0 axis the beginning of the border limit of the board
+		 */
+		g.translate(BORDER_WIDTH, BORDER_WIDTH);
 		
-		// TODO: implement g.translate(BORDER_WIDTH, BORDER_WIDTH); to enhance drawings readability
 		
 		if (natetris.isGamePaused()) {
 			g.setFont(LARGE_FONT);
-			String message = "Game Paused";
 			g.setColor(Color.WHITE);
+			String message = "Game Paused";
 			g.drawString(message, CENTER_X - g.getFontMetrics().stringWidth(message) / 2, CENTER_Y);
 		} else if (natetris.isGameOver() || natetris.isNewGame()) {
 			g.setFont(SMALL_FONT);
-			String message = "To start a new game, press the ENTER key";
 			g.setColor(Color.WHITE);
+			String message = "To start a new game, press the ENTER key";
 			g.drawString(message, CENTER_X - g.getFontMetrics().stringWidth(message) / 2, CENTER_Y);
 		} else {
 			// game is running
@@ -98,10 +103,10 @@ public class Board extends JPanel {
 			 */
 			g.setColor(Color.DARK_GRAY);
 			for (int x = 1; x < ROW_COUNT; x++) {
-				g.drawLine(BORDER_WIDTH, (x * TILE_SIZE) + BORDER_WIDTH , BOARD_WIDTH + BORDER_WIDTH, (x * TILE_SIZE) + BORDER_WIDTH);
+				g.drawLine(0, (x * TILE_SIZE), BOARD_WIDTH, (x * TILE_SIZE));
 			}
 			for (int y = 1; y < COL_COUNT; y++) {
-				g.drawLine((y * TILE_SIZE) + BORDER_WIDTH, BORDER_WIDTH, (y * TILE_SIZE) + BORDER_WIDTH, BOARD_HEIGHT + BORDER_WIDTH);
+				g.drawLine((y * TILE_SIZE), 0, (y * TILE_SIZE), BOARD_HEIGHT);
 			}
 			
 		}
@@ -110,7 +115,7 @@ public class Board extends JPanel {
 		 * draws the board borders
 		 */
 		g.setColor(Color.WHITE);
-		g.drawRect(BORDER_WIDTH, BORDER_WIDTH, BOARD_WIDTH, BOARD_HEIGHT);
+		g.drawRect(0, 0, BOARD_WIDTH, BOARD_HEIGHT);
 	}
 	
 }
