@@ -122,6 +122,34 @@ public class Natetris extends JFrame {
 		preparesNewGame();
 		
 		
+		while (true) {
+			
+			updateGame();
+			
+			renderGame();
+			
+			try {
+				Thread.sleep(500L); // FIXME adjust FPS
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} 
+		}
+		
+	}
+	
+	/**
+	 * Handles the game's logic
+	 */
+	private void updateGame() {
+		
+	}
+	
+	/**
+	 * Render all game windows
+	 */
+	private void renderGame() {
+		board.repaint();
+		infoPanel.repaint();
 	}
 	
 	/**
