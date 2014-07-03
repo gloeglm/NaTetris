@@ -29,6 +29,11 @@ public class Natetris extends JFrame {
 	private boolean isGameOver;
 	
 	/**
+	 * The player's current score 
+     */
+	private static long score;
+	
+	/**
 	 * Creates a new instance of the game. 
 	 * This sets the properties of the JFrame that will hold the game section and
 	 * adds a key listener to it.
@@ -114,9 +119,18 @@ public class Natetris extends JFrame {
 	 * This will refresh the JPanels and handle the game's logic. 
 	 */
 	public void startGame() {
+		preparesNewGame();
+		
+		
+	}
+	
+	/**
+	 * Prepares the board for a new game, initializing all variables to their 
+	 * default values.
+	 */
+	private void preparesNewGame() {
 		setNewGame(true);
-		
-		
+		setScore(0L);
 	}
 	
 	public boolean isGamePaused() {
@@ -143,9 +157,16 @@ public class Natetris extends JFrame {
 		this.isNewGame = isNewGame;
 	}
 
+	public static long getScore() {
+		return score;
+	}
+
+	public static void setScore(long score) {
+		Natetris.score = score;
+	}
+
 	public static void main(String[] args) {
 		Natetris natetris = new Natetris();
 		natetris.startGame();
 	}
-
 }
