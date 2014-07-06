@@ -24,7 +24,7 @@ public class Natetris extends JFrame {
 	 * Game control variables.
 	 * isNewGame represents if the game hasn't started yet. Occurs only when the game is launched
 	 */
-	private boolean isNewGame;
+	private boolean isFirstGame;
 	private boolean isGamePaused;
 	private boolean isGameOver;
 	
@@ -54,7 +54,9 @@ public class Natetris extends JFrame {
 				switch (e.getKeyCode()) {
 					// start new game
 					case KeyEvent.VK_ENTER:
-						
+						if (isGameOver || isFirstGame) {
+							reset();
+						}
 						break;
 						
 					// move down
@@ -78,30 +80,24 @@ public class Natetris extends JFrame {
 						
 						break;
 						
-					// move up
-					case KeyEvent.VK_NUMPAD8:
-					case KeyEvent.VK_W:
-					case KeyEvent.VK_UP:
-						
-						break;
-						
 					// pause
 					case KeyEvent.VK_P:
-						
+						if (isGamePaused) {
+							setGamePaused(false);
+						} else {
+							// TODO stops clock
+							setGamePaused(true);
+						}
 						break;
 						
 				}
 			}
 			
 			@Override
-			public void keyTyped(KeyEvent e) {
-				/* empty block */
-			}
+			public void keyTyped(KeyEvent e) { /* empty block */ }
 			
 			@Override
-			public void keyReleased(KeyEvent e) {
-				/* empty block */
-			}
+			public void keyReleased(KeyEvent e) { /* empty block */	}
 		});
 		
 		this.board = new Board(this);
@@ -121,15 +117,16 @@ public class Natetris extends JFrame {
 	public void startGame() {
 		preparesNewGame();
 		
-		
 		while (true) {
-			
 			updateGame();
 			
 			renderGame();
 			
 			try {
-				Thread.sleep(500L); // FIXME adjust FPS
+				/* FIXME adjust FPS.
+				 * Probably going to create a Clock class measuring time between cycles
+				 */
+				Thread.sleep(500L); 
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			} 
@@ -153,11 +150,20 @@ public class Natetris extends JFrame {
 	}
 	
 	/**
+	 * Sets all default variables to their initial values
+	 */
+	private void reset() {
+		isFirstGame = false;
+		isGameOver = false;
+		isGamePaused = false;
+	}
+	
+	/**
 	 * Prepares the board for a new game, initializing all variables to their 
 	 * default values.
 	 */
 	private void preparesNewGame() {
-		setNewGame(true);
+		setFirstGame(true);
 		setScore(0L);
 	}
 	
@@ -177,12 +183,12 @@ public class Natetris extends JFrame {
 		this.isGameOver = isGameOver;
 	}
 
-	public boolean isNewGame() {
-		return isNewGame;
+	public boolean isFirstGame() {
+		return isFirstGame;
 	}
 
-	public void setNewGame(boolean isNewGame) {
-		this.isNewGame = isNewGame;
+	public void setFirstGame(boolean isNewGame) {
+		this.isFirstGame = isNewGame;
 	}
 
 	public static long getScore() {
