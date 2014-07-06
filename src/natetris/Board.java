@@ -19,7 +19,12 @@ public class Board extends JPanel {
 	/**
 	 * The number of rows in the board
 	 */
-	public static final int ROW_COUNT = 20;
+	public static final int ROW_COUNT = 22;
+	
+	/**
+	 * The number of visible rows in the board
+	 */
+	public static final int VISIBLE_ROW_COUNT = 20;
 	
 	/**
 	 * The size of each individual tile
@@ -37,7 +42,7 @@ public class Board extends JPanel {
 	 * The dimensions of the board panel
 	 */
 	public static final int PANEL_WIDTH = (BORDER_WIDTH * 2) + (COL_COUNT * TILE_SIZE);
-	public static final int PANEL_HEIGHT = (BORDER_WIDTH * 2) + (ROW_COUNT * TILE_SIZE);
+	public static final int PANEL_HEIGHT = (BORDER_WIDTH * 2) + (VISIBLE_ROW_COUNT * TILE_SIZE);
 	
 	/**
 	 * The dimensions of the actual shown board
@@ -54,9 +59,9 @@ public class Board extends JPanel {
 	/**
 	 * Fonts used 
 	 */
-	 private static final Font LARGE_FONT = new Font("Tahoma", Font.PLAIN, 16);
-	 private static final Font SMALL_FONT = new Font("Tahoma", Font.PLAIN, 11);
-	
+	private static final Font LARGE_FONT = new Font("Tahoma", Font.PLAIN, 16);
+	private static final Font SMALL_FONT = new Font("Tahoma", Font.PLAIN, 11);
+	 
 	/**
 	 * The group of tiles that compose the entire board
 	 */
@@ -84,25 +89,36 @@ public class Board extends JPanel {
 		 */
 		g.translate(BORDER_WIDTH, BORDER_WIDTH);
 		
-		
 		if (natetris.isGamePaused()) {
 			g.setFont(LARGE_FONT);
 			g.setColor(Color.WHITE);
 			String message = "Game Paused";
 			g.drawString(message, CENTER_X - g.getFontMetrics().stringWidth(message) / 2, CENTER_Y);
-		} else if (natetris.isGameOver() || natetris.isNewGame()) {
+		} else if (natetris.isGameOver() || natetris.isFirstGame()) {
 			g.setFont(SMALL_FONT);
 			g.setColor(Color.WHITE);
 			String message = "To start a new game, press the ENTER key";
 			g.drawString(message, CENTER_X - g.getFontMetrics().stringWidth(message) / 2, CENTER_Y);
+			
+			if (natetris.isGameOver()) {
+				g.setFont(LARGE_FONT);
+				String gameOver = "Game over :(";
+				g.drawString(gameOver, CENTER_X - g.getFontMetrics().stringWidth(gameOver) / 2, CENTER_Y - 30);
+			}
 		} else {
 			// game is running
+			
+			for (int x = 0; x < BOARD_WIDTH; x++) {
+				for (int y = 0; y < BOARD_HEIGHT; y++) {
+					
+				}
+			}
 			
 			/*
 			 * draws the board itself, which is basically made of squares.
 			 */
 			g.setColor(Color.DARK_GRAY);
-			for (int x = 1; x < ROW_COUNT; x++) {
+			for (int x = 1; x < VISIBLE_ROW_COUNT; x++) {
 				g.drawLine(0, (x * TILE_SIZE), BOARD_WIDTH, (x * TILE_SIZE));
 			}
 			for (int y = 1; y < COL_COUNT; y++) {
