@@ -3,6 +3,7 @@ package natetris;
 import java.awt.BorderLayout;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Random;
 
 import javax.swing.JFrame;
 
@@ -32,6 +33,21 @@ public class Natetris extends JFrame {
 	 * The player's current score 
      */
 	private static long score;
+	
+	/**
+	 * The quantity of different tile types 
+	 */
+	private static final int differentTileTypes = Tile.values().length;
+	
+	/**
+	 * The current piece that's falling
+	 */
+	private Tile currentPiece;
+	
+	/**
+	 * Random generator
+	 */
+	private Random random;
 	
 	/**
 	 * Creates a new instance of the game. 
@@ -116,6 +132,7 @@ public class Natetris extends JFrame {
 	 */
 	public void startGame() {
 		preparesNewGame();
+		this.random = new Random();
 		
 		while (true) {
 			updateGame();
@@ -126,7 +143,7 @@ public class Natetris extends JFrame {
 				/* FIXME adjust FPS.
 				 * Probably going to create a Clock class measuring time between cycles
 				 */
-				Thread.sleep(500L); 
+				Thread.sleep(50); 
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			} 
@@ -156,6 +173,12 @@ public class Natetris extends JFrame {
 		isFirstGame = false;
 		isGameOver = false;
 		isGamePaused = false;
+		
+		spawnNewPiece();
+	}
+	
+	private void spawnNewPiece() {
+		
 	}
 	
 	/**
