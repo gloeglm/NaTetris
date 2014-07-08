@@ -1,6 +1,7 @@
 package natetris;
 
 import java.awt.BorderLayout;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Random;
@@ -37,12 +38,17 @@ public class Natetris extends JFrame {
 	/**
 	 * The quantity of different tile types 
 	 */
-	private static final int differentTileTypes = Tile.values().length;
+	public static final int TILES_COUNT = Tile.values().length;
 	
 	/**
-	 * The current piece that's falling
+	 * The current piece that is falling down
 	 */
 	private Tile currentPiece;
+
+	/**
+	 * The next piece that will be on the game 
+	 */
+	private Tile nextPiece;
 	
 	/**
 	 * Random generator
@@ -63,7 +69,7 @@ public class Natetris extends JFrame {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setResizable(false);
 		
-		addKeyListener(new KeyListener() {
+		addKeyListener(new KeyAdapter() {
 			
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -101,19 +107,17 @@ public class Natetris extends JFrame {
 						if (isGamePaused) {
 							setGamePaused(false);
 						} else {
-							// TODO stops clock
+							// TODO clock: stops clock
 							setGamePaused(true);
 						}
 						break;
-						
-				}
+				}		
 			}
 			
 			@Override
-			public void keyTyped(KeyEvent e) { /* empty block */ }
-			
-			@Override
-			public void keyReleased(KeyEvent e) { /* empty block */	}
+			public void keyReleased(KeyEvent e) {
+				// TODO clock: when dropping-piece button is released, make game get back to original speed
+			}
 		});
 		
 		this.board = new Board(this);
@@ -141,7 +145,7 @@ public class Natetris extends JFrame {
 			
 			try {
 				/* FIXME adjust FPS.
-				 * Probably going to create a Clock class measuring time between cycles
+				 * clock 101: Probably going to create a Clock class measuring time between cycles
 				 */
 				Thread.sleep(50); 
 			} catch (InterruptedException e) {
@@ -178,7 +182,8 @@ public class Natetris extends JFrame {
 	}
 	
 	private void spawnNewPiece() {
-		
+		this.currentPiece = nextPiece;
+		this.nextPiece = (Tile.values()[random.nextInt(TILES_COUNT)]);
 	}
 	
 	/**
@@ -186,40 +191,36 @@ public class Natetris extends JFrame {
 	 * default values.
 	 */
 	private void preparesNewGame() {
-		setFirstGame(true);
-		setScore(0L);
+		this.isFirstGame = true;
+		Natetris.score = 0L;
 	}
 	
 	public boolean isGamePaused() {
 		return isGamePaused;
 	}
 
-	public void setGamePaused(boolean isGamePaused) {
-		this.isGamePaused = isGamePaused;
-	}
-
 	public boolean isGameOver() {
 		return isGameOver;
-	}
-
-	public void setGameOver(boolean isGameOver) {
-		this.isGameOver = isGameOver;
 	}
 
 	public boolean isFirstGame() {
 		return isFirstGame;
 	}
-
-	public void setFirstGame(boolean isNewGame) {
-		this.isFirstGame = isNewGame;
+	
+	public void setGamePaused(boolean value) {
+		this.isGamePaused = value;
 	}
 
 	public static long getScore() {
 		return score;
 	}
 
-	public static void setScore(long score) {
-		Natetris.score = score;
+	public Tile getNextPiece() {
+		return nextPiece;
+	}
+
+	public Tile getCurrentPiece() {
+		return currentPiece;
 	}
 
 	public static void main(String[] args) {
