@@ -3,7 +3,6 @@ package natetris;
 import java.awt.BorderLayout;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.Random;
 
 import javax.swing.JFrame;
@@ -33,7 +32,7 @@ public class Natetris extends JFrame {
 	/**
 	 * The player's current score 
      */
-	private static long score;
+	private long score;
 	
 	/**
 	 * The quantity of different tile types 
@@ -49,6 +48,16 @@ public class Natetris extends JFrame {
 	 * The next piece that will be on the game 
 	 */
 	private Tile nextPiece;
+	
+	/**
+	 * The column that the current piece is located
+	 */
+	private int currentCol;
+	
+	/**
+	 * The row that the current piece is located
+	 */
+	private int currentRow;
 	
 	/**
 	 * Random generator
@@ -77,7 +86,7 @@ public class Natetris extends JFrame {
 					// start new game
 					case KeyEvent.VK_ENTER:
 						if (isGameOver || isFirstGame) {
-							reset();
+							resetGame();
 						}
 						break;
 						
@@ -135,8 +144,8 @@ public class Natetris extends JFrame {
 	 * This will refresh the JPanels and handle the game's logic. 
 	 */
 	public void startGame() {
-		preparesNewGame();
 		this.random = new Random();
+		resetGame();
 		
 		while (true) {
 			updateGame();
@@ -159,7 +168,11 @@ public class Natetris extends JFrame {
 	 * Handles the game's logic
 	 */
 	private void updateGame() {
-		
+		if (board.isPossibleToMovePiece(currentPiece, currentRow + 1, currentCol)) {
+			currentRow--;
+		} else {
+			
+		}
 	}
 	
 	/**
@@ -173,26 +186,25 @@ public class Natetris extends JFrame {
 	/**
 	 * Sets all default variables to their initial values
 	 */
-	private void reset() {
-		isFirstGame = false;
-		isGameOver = false;
-		isGamePaused = false;
+	private void resetGame() {
+		this.isFirstGame = false;
+		this.isGameOver = false;
+		this.isGamePaused = false;
+		this.score = 0L;
+		this.nextPiece = (Tile.values()[random.nextInt(TILES_COUNT)]);
 		
 		spawnNewPiece();
 	}
 	
+	/**
+	 * Creates a new piece and set it as the next piece to fall. 
+	 * The previous piece is then placed as the current one.
+	 */
 	private void spawnNewPiece() {
 		this.currentPiece = nextPiece;
+		this.currentCol = currentPiece.getSpawnCol();
+		this.currentRow = currentPiece.getSpawnRow();
 		this.nextPiece = (Tile.values()[random.nextInt(TILES_COUNT)]);
-	}
-	
-	/**
-	 * Prepares the board for a new game, initializing all variables to their 
-	 * default values.
-	 */
-	private void preparesNewGame() {
-		this.isFirstGame = true;
-		Natetris.score = 0L;
 	}
 	
 	public boolean isGamePaused() {
@@ -210,17 +222,17 @@ public class Natetris extends JFrame {
 	public void setGamePaused(boolean value) {
 		this.isGamePaused = value;
 	}
-
-	public static long getScore() {
-		return score;
+	
+	public Tile getCurrentPiece() {
+		return currentPiece;
 	}
-
+	
 	public Tile getNextPiece() {
 		return nextPiece;
 	}
 
-	public Tile getCurrentPiece() {
-		return currentPiece;
+	public long getScore() {
+		return score;
 	}
 
 	public static void main(String[] args) {
