@@ -10,7 +10,7 @@ public enum Tile {
 	/**
 	 * I-shaped tetromino, colored cyan
 	 */
-	TileI (new Color(0, 255, 230), new boolean[][] {
+	TileI (4, new Color(0, 255, 230), new boolean[][] {
 			{
 				false, 	false, 	false, 	false,
 				true,	true,	true,	true,
@@ -40,7 +40,7 @@ public enum Tile {
 	/**
 	 * O-shaped tetromino, colored yellow.
 	 */
-	TileO(new Color(255, 255, 0), new boolean[][] {
+	TileO(2, new Color(255, 255, 0), new boolean[][] {
 			{
 				true,	true, 
 				true,	true
@@ -62,7 +62,7 @@ public enum Tile {
 	/**
 	 * L-shaped tetromino, colored range. 
 	 */
-	TileL(new Color(255, 160, 0), new boolean[][] {
+	TileL(3, new Color(255, 160, 0), new boolean[][] {
 			{
 				false,	true,	false,
 				false,	true,	false,
@@ -89,7 +89,7 @@ public enum Tile {
 	/**
 	 * J-shaped tetromino, colored blue
 	 */
-	TileJ(new Color(0, 0, 255), new boolean[][] {
+	TileJ(3, new Color(0, 0, 255), new boolean[][] {
 			{
 				false,	true,	false,
 				false,	true,	false,
@@ -115,7 +115,7 @@ public enum Tile {
 	/**
 	 * S-shaped tetromino, colored green
 	 */
-	TileS(new Color(0, 255, 0), new boolean[][] {
+	TileS(3, new Color(0, 255, 0), new boolean[][] {
 			{
 				false,	true,	true,
 				true,	true,	false,
@@ -141,7 +141,7 @@ public enum Tile {
 	/**
 	 * Z-shaped tetromino, colored red
 	 */
-	TileZ(new Color(255, 0, 0), new boolean[][] {
+	TileZ(3, new Color(255, 0, 0), new boolean[][] {
 			{
 				true,	true,	false,
 				false,	true,	true,
@@ -167,7 +167,7 @@ public enum Tile {
 	/**
 	 * T-shaped tetromino, colored purple
 	 */
-	TileT(new Color(170, 0, 255), new boolean[][] {
+	TileT(3, new Color(170, 0, 255), new boolean[][] {
 			{
 				true,	true,	true,
 				false,	true,	false,
@@ -197,13 +197,30 @@ public enum Tile {
 	
 	/**
 	 * The piece color
-	 * @param tiles
 	 */
-	private Color color; 
+	private Color color;
 	
-	private Tile (Color color, boolean [][] tiles) {
-		setColor(color);
-		setTiles(tiles);
+	/**
+	 * The dimension of the piece
+	 */
+	private int dimension;
+	
+	/**
+	 * The column that the piece will be originally spawned
+	 */
+	private int spawnCol;
+	
+	/**
+	 * The row that the piece will be originally spawned
+	 */
+	private int spawnRow;
+	
+	private Tile (int dimension, Color color, boolean [][] tiles) {
+		this.color = color;
+		this.tiles = tiles;
+		this.dimension = dimension;
+		this.spawnCol = 4; // XXX TEMPORARY -- EACH PIECE WILL HAVE A DIFFERENT SPAWN LOCATION IN THE FUTURE
+		this.spawnRow = 0; // XXX TEMPORARY -- EACH PIECE WILL HAVE A DIFFERENT SPAWN LOCATION IN THE FUTURE
 	}
 
 	public boolean[][] getTiles() {
@@ -221,5 +238,17 @@ public enum Tile {
 	public void setColor(Color color) {
 		this.color = color;
 	}
+
+	public int getDimension() {
+		return dimension;
+	}
 	
+	public int getSpawnCol() {
+		return spawnCol;
+	}
+
+	public int getSpawnRow() {
+		return spawnRow;
+	}
+
 }
