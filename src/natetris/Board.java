@@ -65,7 +65,7 @@ public class Board extends JPanel {
 	/**
 	 * The group of tiles that compose the entire board
 	 */
-	private Tile[] tiles;
+	private TilePiece[][] tiles;
 	
 	/**
 	 * The game instance
@@ -74,7 +74,7 @@ public class Board extends JPanel {
 	
 	public Board(Natetris natetris) {
 		this.natetris = natetris;
-		this.tiles = new Tile[ROW_COUNT * COL_COUNT];
+		tiles = new TilePiece[ROW_COUNT][COL_COUNT];
 		setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
 		setBackground(Color.BLACK);
 	}
@@ -108,9 +108,27 @@ public class Board extends JPanel {
 		} else {
 			// game is running
 			
-			for (int x = 0; x < BOARD_WIDTH; x++) {
-				for (int y = 0; y < BOARD_HEIGHT; y++) {
-					
+			for (int x = 0; x < VISIBLE_ROW_COUNT; x++) {
+				for (int y = 0; y < COL_COUNT; y++) {
+					if (tiles[x][y] != null) {
+						// TODO draws persistent tile
+					}
+				}
+			}
+			
+			/*
+			 * draws current tile
+			 */
+			TilePiece currentPiece = natetris.getCurrentPiece();
+			int currentDirection = natetris.getRotation();
+			int currentRow = natetris.getCurrentRow();
+			int currentCol = natetris.getCurrentCol();
+			g.setColor(currentPiece.getColor());
+			for (int x = 0; x < currentPiece.getDimension(); x++) {
+				for (int y = 0; y < currentPiece.getDimension(); y++) {
+					if (currentPiece.isTile(currentDirection, x, y)) {
+						drawTile(currentPiece, currentCol + y, currentRow + x, g);
+					}
 				}
 			}
 			
@@ -132,6 +150,14 @@ public class Board extends JPanel {
 		 */
 		g.setColor(Color.WHITE);
 		g.drawRect(0, 0, BOARD_WIDTH, BOARD_HEIGHT);
+	}
+
+	public boolean isPossibleToMovePiece(TilePiece piece, int row, int col) {
+		return true; // yea... TODO
+	}
+	
+	private void drawTile(TilePiece piece, int row, int col, Graphics g) {
+		g.fillRect(row * TILE_SIZE, col * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 	}
 	
 }

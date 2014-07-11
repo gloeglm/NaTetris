@@ -37,17 +37,17 @@ public class Natetris extends JFrame {
 	/**
 	 * The quantity of different tile types 
 	 */
-	public static final int TILES_COUNT = Tile.values().length;
+	public static final int TILES_COUNT = TilePiece.values().length;
 	
 	/**
 	 * The current piece that is falling down
 	 */
-	private Tile currentPiece;
+	private TilePiece currentPiece;
 
 	/**
 	 * The next piece that will be on the game 
 	 */
-	private Tile nextPiece;
+	private TilePiece nextPiece;
 	
 	/**
 	 * The column that the current piece is located
@@ -58,6 +58,11 @@ public class Natetris extends JFrame {
 	 * The row that the current piece is located
 	 */
 	private int currentRow;
+	
+	/**
+	 * The falling piece current rotation
+	 */
+	private int rotation;
 	
 	/**
 	 * Random generator
@@ -146,6 +151,7 @@ public class Natetris extends JFrame {
 	public void startGame() {
 		this.random = new Random();
 		resetGame();
+		this.isFirstGame = true;
 		
 		while (true) {
 			updateGame();
@@ -156,7 +162,7 @@ public class Natetris extends JFrame {
 				/* FIXME adjust FPS.
 				 * clock 101: Probably going to create a Clock class measuring time between cycles
 				 */
-				Thread.sleep(50); 
+				Thread.sleep(2000); 
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			} 
@@ -169,7 +175,7 @@ public class Natetris extends JFrame {
 	 */
 	private void updateGame() {
 		if (board.isPossibleToMovePiece(currentPiece, currentRow + 1, currentCol)) {
-			currentRow--;
+			currentRow++;
 		} else {
 			
 		}
@@ -191,7 +197,7 @@ public class Natetris extends JFrame {
 		this.isGameOver = false;
 		this.isGamePaused = false;
 		this.score = 0L;
-		this.nextPiece = (Tile.values()[random.nextInt(TILES_COUNT)]);
+		this.nextPiece = (TilePiece.values()[random.nextInt(TILES_COUNT)]);
 		
 		spawnNewPiece();
 	}
@@ -202,9 +208,10 @@ public class Natetris extends JFrame {
 	 */
 	private void spawnNewPiece() {
 		this.currentPiece = nextPiece;
+		this.rotation = 0;
 		this.currentCol = currentPiece.getSpawnCol();
 		this.currentRow = currentPiece.getSpawnRow();
-		this.nextPiece = (Tile.values()[random.nextInt(TILES_COUNT)]);
+		this.nextPiece = (TilePiece.values()[random.nextInt(TILES_COUNT)]);
 	}
 	
 	public boolean isGamePaused() {
@@ -223,16 +230,28 @@ public class Natetris extends JFrame {
 		this.isGamePaused = value;
 	}
 	
-	public Tile getCurrentPiece() {
+	public TilePiece getCurrentPiece() {
 		return currentPiece;
 	}
 	
-	public Tile getNextPiece() {
+	public TilePiece getNextPiece() {
 		return nextPiece;
 	}
 
 	public long getScore() {
 		return score;
+	}
+	
+	public int getCurrentCol() {
+		return currentCol;
+	}
+	
+	public int getCurrentRow() {
+		return currentRow;
+	}
+
+	public int getRotation() {
+		return rotation;
 	}
 
 	public static void main(String[] args) {
