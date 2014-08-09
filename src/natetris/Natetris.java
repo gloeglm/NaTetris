@@ -62,7 +62,7 @@ public class Natetris extends JFrame {
 	/**
 	 * The falling piece current rotation
 	 */
-	private int rotation;
+	private int currentRotation;
 	
 	/**
 	 * Random generator
@@ -99,21 +99,37 @@ public class Natetris extends JFrame {
 					case KeyEvent.VK_NUMPAD2:
 					case KeyEvent.VK_S:
 					case KeyEvent.VK_DOWN:
-						
+						// enhance tile's velocity
 						break;
 						
 					// move right
 					case KeyEvent.VK_NUMPAD6:
 					case KeyEvent.VK_D:
 					case KeyEvent.VK_RIGHT:
-						
+						if (!isGamePaused && board.isPossibleToMovePiece(currentPiece, currentRow, currentCol+1)) {
+							currentCol++;
+						}
 						break;
 						
 					// move left
 					case KeyEvent.VK_NUMPAD4:
 					case KeyEvent.VK_A:
 					case KeyEvent.VK_LEFT:
+						if (!isGamePaused && board.isPossibleToMovePiece(currentPiece, currentRow, currentCol-1)) {
+							currentCol--;
+						}
+						break;
 						
+					case KeyEvent.VK_Q:
+						if (!isGamePaused) {
+							rotateCurrentPiece((currentRotation == 0) ? 3 : currentRotation-1);
+						}
+						break;
+						
+					case KeyEvent.VK_E:
+						if (!isGamePaused) {
+							rotateCurrentPiece((currentRotation == 3) ? 0 : currentRotation+1);
+						}
 						break;
 						
 					// pause
@@ -208,10 +224,20 @@ public class Natetris extends JFrame {
 	 */
 	private void spawnNewPiece() {
 		this.currentPiece = nextPiece;
-		this.rotation = 0;
+		this.currentRotation = 0;
 		this.currentCol = currentPiece.getSpawnCol();
 		this.currentRow = currentPiece.getSpawnRow();
 		this.nextPiece = (TilePiece.values()[random.nextInt(TILES_COUNT)]);
+	}
+	
+	public void rotateCurrentPiece(int newDirection) {
+		/*
+		 * TODO: check if piece is getting off the board with new direction, and move it away if so
+		 */
+		
+		if (board.isPossibleToMovePiece(currentPiece, currentRow, currentCol)) {
+			this.currentRotation = newDirection;
+		}
 	}
 	
 	public boolean isGamePaused() {
@@ -250,8 +276,8 @@ public class Natetris extends JFrame {
 		return currentRow;
 	}
 
-	public int getRotation() {
-		return rotation;
+	public int getCurrentRotation() {
+		return currentRotation;
 	}
 
 	public static void main(String[] args) {

@@ -111,7 +111,7 @@ public class Board extends JPanel {
 			for (int x = 0; x < VISIBLE_ROW_COUNT; x++) {
 				for (int y = 0; y < COL_COUNT; y++) {
 					if (tiles[x][y] != null) {
-						// TODO draws persistent tile
+						// TODO draws persistent tiles
 					}
 				}
 			}
@@ -120,7 +120,7 @@ public class Board extends JPanel {
 			 * draws current tile
 			 */
 			TilePiece currentPiece = natetris.getCurrentPiece();
-			int currentDirection = natetris.getRotation();
+			int currentDirection = natetris.getCurrentRotation();
 			int currentRow = natetris.getCurrentRow();
 			int currentCol = natetris.getCurrentCol();
 			g.setColor(currentPiece.getColor());
