@@ -223,10 +223,54 @@ public enum TilePiece {
 		this.spawnRow = 0; // XXX TEMPORARY -- EACH PIECE WILL HAVE A DIFFERENT SPAWN LOCATION IN THE FUTURE
 	}
 	
-	public boolean isTile(int direction, int x, int y) {
-		return (tiles[direction][x * direction + y ]);
+	public boolean isTile(int x, int y, int rotation) {
+		return (tiles[rotation][y * dimension + x]);
 	}
-
+	
+	/**
+	 * Scans the piece from left to right searching for a tile, and 
+	 * returns when a tile is found.
+	 * @param rotation - current rotation of the piece
+	 * @return the first found tile's column location
+	 */
+	public int getLeftmostTile(int rotation) {
+		for (int x = 0; x < dimension; x++) {
+			for (int y = dimension - 1; y >= 0; y--) {
+				if (isTile(x, y, rotation)) {
+					return x; // returns the current column
+				}
+			}
+		}
+		return -1;
+	}
+	
+ 	/**
+	 * Scans the piece from right to left searching for a tile, and 
+	 * returns when a tile is found.
+	 * @param rotation - current rotation of the piece
+	 * @return the first found tile's column location
+	 */
+	public int getRightmostTile(int rotation) {
+		for (int x = dimension - 1; x >= 0; x--) {
+			for (int y = dimension - 1; y >= 0; y--) {
+				if (isTile(x, y, rotation)) {
+					return x; // returns the current column
+				}
+			}
+		}
+		return -1;
+	}
+	
+	/**
+	 * 
+	 * @param rotation
+	 * @return
+	 */
+	public int getLowermostTile(int rotation) {
+		// TODO
+		return -1;
+	}
+	
 	public boolean[][] getTiles() {
 		return tiles;
 	}
@@ -254,5 +298,4 @@ public enum TilePiece {
 	public int getSpawnRow() {
 		return spawnRow;
 	}
-
 }

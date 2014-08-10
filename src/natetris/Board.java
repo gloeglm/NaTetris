@@ -111,7 +111,7 @@ public class Board extends JPanel {
 			for (int x = 0; x < VISIBLE_ROW_COUNT; x++) {
 				for (int y = 0; y < COL_COUNT; y++) {
 					if (tiles[x][y] != null) {
-						// TODO draws persistent tiles
+						// TODO draw persistent tiles
 					}
 				}
 			}
@@ -120,20 +120,26 @@ public class Board extends JPanel {
 			 * draws current tile
 			 */
 			TilePiece currentPiece = natetris.getCurrentPiece();
-			int currentDirection = natetris.getCurrentRotation();
+			int currentDirection = natetris.getPieceRotation();
 			int currentRow = natetris.getCurrentRow();
 			int currentCol = natetris.getCurrentCol();
 			g.setColor(currentPiece.getColor());
 			for (int x = 0; x < currentPiece.getDimension(); x++) {
 				for (int y = 0; y < currentPiece.getDimension(); y++) {
-					if (currentPiece.isTile(currentDirection, x, y)) {
-						drawTile(currentPiece, currentCol + y, currentRow + x, g);
+					if (currentPiece.isTile(x, y, currentDirection)) {
+						// g.setColor() needed because of ELSE statement; removable in the future
+						g.setColor(currentPiece.getColor()); 
+						drawTile(currentCol + x, currentRow + y, g);
+					} else { 
+						// gray background added for debugging reasons
+						g.setColor(Color.gray);
+						g.fillRect((currentCol + x) * TILE_SIZE, (currentRow + y) * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 					}
 				}
 			}
 			
 			/*
-			 * draws the board itself, which is basically made of squares.
+			 * draws the board itself, which is basically made of empty squares.
 			 */
 			g.setColor(Color.DARK_GRAY);
 			for (int x = 1; x < VISIBLE_ROW_COUNT; x++) {
@@ -153,11 +159,19 @@ public class Board extends JPanel {
 	}
 
 	public boolean isPossibleToMovePiece(TilePiece piece, int row, int col) {
-		return true; // yea... TODO
+		// check if it is a valid column
+		if (col < (-piece.getLeftmostTile(natetris.getPieceRotation())) ||
+			(col + piece.getRightmostTile(natetris.getPieceRotation())) >= COL_COUNT) {
+			return false;
+		}
+		
+		// check if it is a valid row
+			
+		return true;
 	}
 	
-	private void drawTile(TilePiece piece, int row, int col, Graphics g) {
-		g.fillRect(row * TILE_SIZE, col * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+	private void drawTile(int x, int y, Graphics g) {
+		g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 	}
 	
 }

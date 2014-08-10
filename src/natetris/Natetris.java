@@ -178,7 +178,7 @@ public class Natetris extends JFrame {
 				/* FIXME adjust FPS.
 				 * clock 101: Probably going to create a Clock class measuring time between cycles
 				 */
-				Thread.sleep(2000); 
+				Thread.sleep(750); 
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			} 
@@ -191,7 +191,7 @@ public class Natetris extends JFrame {
 	 */
 	private void updateGame() {
 		if (board.isPossibleToMovePiece(currentPiece, currentRow + 1, currentCol)) {
-			currentRow++;
+//			currentRow++;
 		} else {
 			
 		}
@@ -276,7 +276,7 @@ public class Natetris extends JFrame {
 		return currentRow;
 	}
 
-	public int getCurrentRotation() {
+	public int getPieceRotation() {
 		return currentRotation;
 	}
 
