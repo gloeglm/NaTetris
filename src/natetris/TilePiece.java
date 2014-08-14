@@ -228,10 +228,10 @@ public enum TilePiece {
 	}
 	
 	/**
-	 * Scans the piece from left to right searching for a tile, and 
+	 * Scans upside down the piece searching for a tile
 	 * returns when a tile is found.
 	 * @param rotation - current rotation of the piece
-	 * @return the first found tile's column location
+	 * @return the first found tile's column location, starting from up-right ending in up-left
 	 */
 	public int getLeftmostTile(int rotation) {
 		for (int x = 0; x < dimension; x++) {
@@ -245,10 +245,10 @@ public enum TilePiece {
 	}
 	
  	/**
-	 * Scans the piece from right to left searching for a tile, and 
+	 * Scans from bottom to up the piece searching for a tile 
 	 * returns when a tile is found.
 	 * @param rotation - current rotation of the piece
-	 * @return the first found tile's column location
+	 * @return the first found tile's column location, starting from bottom-right to up-left
 	 */
 	public int getRightmostTile(int rotation) {
 		for (int x = dimension - 1; x >= 0; x--) {
@@ -262,9 +262,10 @@ public enum TilePiece {
 	}
 	
 	/**
-	 * 
-	 * @param rotation
-	 * @return
+	 * Scans the piece from right to left searching for a tile, and 
+	 * returns when a tile is found.
+	 * @param rotation - current rotation of the piece
+	 * @return the first found tile's location, starting from bottom-right to up-left
 	 */
 	public int getLowermostTile(int rotation) {
 		// TODO
