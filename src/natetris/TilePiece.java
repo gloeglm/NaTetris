@@ -268,7 +268,13 @@ public enum TilePiece {
 	 * @return the first found tile's location, starting from bottom-right to up-left
 	 */
 	public int getLowermostTile(int rotation) {
-		// TODO
+		for (int y = dimension - 1; y >= 0; y--) {
+			for (int x = dimension - 1; x >= 0; x--) {
+				if (isTile(x, y, rotation)) {
+					return y;
+				}
+			}
+		}
 		return -1;
 	}
 	
