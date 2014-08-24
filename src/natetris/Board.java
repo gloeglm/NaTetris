@@ -72,6 +72,10 @@ public class Board extends JPanel {
 	 */
 	private Natetris natetris;
 	
+	private void drawTile(int x, int y, Graphics g) {
+		g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+	}
+	
 	public Board(Natetris natetris) {
 		this.natetris = natetris;
 		tiles = new TilePiece[ROW_COUNT][COL_COUNT];
@@ -130,7 +134,8 @@ public class Board extends JPanel {
 						// g.setColor() needed because of ELSE statement; removable in the future
 						g.setColor(currentPiece.getColor()); 
 						drawTile(currentCol + x, currentRow + y, g);
-					} else { 
+					} 
+					else { 
 						// gray background added for debugging reasons
 						g.setColor(Color.gray);
 						g.fillRect((currentCol + x) * TILE_SIZE, (currentRow + y) * TILE_SIZE, TILE_SIZE, TILE_SIZE);
@@ -161,17 +166,25 @@ public class Board extends JPanel {
 	public boolean isPossibleToMovePiece(TilePiece piece, int row, int col) {
 		// check if it is a valid column
 		if (col < (-piece.getLeftmostTile(natetris.getPieceRotation())) ||
-			(col + piece.getRightmostTile(natetris.getPieceRotation())) >= COL_COUNT) {
+				(col + piece.getRightmostTile(natetris.getPieceRotation())) >= COL_COUNT) {
+			
 			return false;
 		}
-		
 		// check if it is a valid row
-			
+		if ((row + piece.getLowermostTile(natetris.getPieceRotation())) >= VISIBLE_ROW_COUNT) {
+			return false;
+		}
 		return true;
 	}
 	
-	private void drawTile(int x, int y, Graphics g) {
-		g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+	/**
+	 * Clears the entire board, setting all slots to null
+	 */
+	public void clear() {
+		for (int x = 0; x < tiles.length; x++) {
+			for (int y = 0; y < tiles[x].length; y++) {
+				tiles[x][y] = null;
+			}
+		}
 	}
-	
 }

@@ -171,14 +171,13 @@ public class Natetris extends JFrame {
 		
 		while (true) {
 			updateGame();
-			
 			renderGame();
 			
 			try {
 				/* FIXME adjust FPS.
 				 * clock 101: Probably going to create a Clock class measuring time between cycles
 				 */
-				Thread.sleep(200); 
+				Thread.sleep(800); 
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			} 
@@ -213,8 +212,8 @@ public class Natetris extends JFrame {
 		this.isGameOver = false;
 		this.isGamePaused = false;
 		this.score = 0L;
-		this.nextPiece = (TilePiece.values()[random.nextInt(TILES_COUNT)]);
-		
+		this.nextPiece = TilePiece.values()[0];//TilePiece.values()[random.nextInt(TILES_COUNT)];
+		this.board.clear();
 		spawnNewPiece();
 	}
 	
@@ -227,7 +226,7 @@ public class Natetris extends JFrame {
 		this.currentRotation = 0;
 		this.currentCol = currentPiece.getSpawnCol();
 		this.currentRow = currentPiece.getSpawnRow();
-		this.nextPiece = (TilePiece.values()[random.nextInt(TILES_COUNT)]);
+		this.nextPiece = TilePiece.values()[random.nextInt(TILES_COUNT)];
 	}
 	
 	public void rotateCurrentPiece(int newDirection) {
