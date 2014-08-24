@@ -212,7 +212,7 @@ public class Natetris extends JFrame {
 		this.isGameOver = false;
 		this.isGamePaused = false;
 		this.score = 0L;
-		this.nextPiece = TilePiece.values()[0];//TilePiece.values()[random.nextInt(TILES_COUNT)];
+		this.nextPiece = TilePiece.values()[random.nextInt(TILES_COUNT)];
 		this.board.clear();
 		spawnNewPiece();
 	}
@@ -230,9 +230,14 @@ public class Natetris extends JFrame {
 	}
 	
 	public void rotateCurrentPiece(int newDirection) {
-		/*
-		 * TODO: check if piece is getting off the board with new direction, and move it away if so
-		 */
+		// avoids the piece from overflowing the board when rotated near left edge
+		while ((currentCol + currentPiece.getLeftmostTile(newDirection)) < 0) {
+			currentCol++;
+		}
+		// avoids the piece from overflowing the board when rotated near right edge
+		while ((currentCol + currentPiece.getRightmostTile(newDirection)) >= Board.COL_COUNT) {
+			currentCol--;
+		} 
 		
 		if (board.isPossibleToMovePiece(currentPiece, currentRow, currentCol)) {
 			this.currentRotation = newDirection;
