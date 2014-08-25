@@ -112,8 +112,8 @@ public class Board extends JPanel {
 		} else {
 			// game is running
 			
-			for (int x = COL_COUNT - 1; x > 0; x--) {
-				for (int y = VISIBLE_ROW_COUNT - 1; y > 0; y--) {
+			for (int x = COL_COUNT - 1; x >= 0; x--) {
+				for (int y = VISIBLE_ROW_COUNT - 1; y >= 0; y--) {
 					if (tiles[x][y] != null) {
 						g.setColor(tiles[x][y].getColor());
 						drawTile(x, y, g);
