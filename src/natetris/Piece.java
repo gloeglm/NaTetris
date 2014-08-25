@@ -5,7 +5,7 @@ import java.awt.Color;
 /**
  * Describes and details the properties shared among the pieces.
  */
-public enum Tile {
+public enum Piece {
 	
 	/**
 	 * I-shaped tetromino, colored cyan
@@ -60,7 +60,7 @@ public enum Tile {
 	}),
 	
 	/**
-	 * L-shaped tetromino, colored range. 
+	 * L-shaped tetromino, colored orange. 
 	 */
 	TileL(3, new Color(255, 160, 0), new boolean[][] {
 			{
@@ -215,14 +215,69 @@ public enum Tile {
 	 */
 	private int spawnRow;
 	
-	private Tile (int dimension, Color color, boolean [][] tiles) {
+	private Piece (int dimension, Color color, boolean [][] tiles) {
 		this.color = color;
 		this.tiles = tiles;
 		this.dimension = dimension;
 		this.spawnCol = 4; // XXX TEMPORARY -- EACH PIECE WILL HAVE A DIFFERENT SPAWN LOCATION IN THE FUTURE
 		this.spawnRow = 0; // XXX TEMPORARY -- EACH PIECE WILL HAVE A DIFFERENT SPAWN LOCATION IN THE FUTURE
 	}
-
+	
+	public boolean isTile(int x, int y, int rotation) {
+		return (tiles[rotation][y * dimension + x]);
+	}
+	
+	/**
+	 * Scans upside down the piece searching for a tile
+	 * returns when a tile is found.
+	 * @param rotation - current rotation of the piece
+	 * @return the first found tile's column location, starting from up-right ending in up-left
+	 */
+	public int getLeftmostTile(int rotation) {
+		for (int x = 0; x < dimension; x++) {
+			for (int y = dimension - 1; y >= 0; y--) {
+				if (isTile(x, y, rotation)) {
+					return x; // returns the current column
+				}
+			}
+		}
+		return -1;
+	}
+	
+ 	/**
+	 * Scans from bottom to up the piece searching for a tile 
+	 * returns when a tile is found.
+	 * @param rotation - current rotation of the piece
+	 * @return the first found tile's column location, starting from bottom-right to up-left
+	 */
+	public int getRightmostTile(int rotation) {
+		for (int x = dimension - 1; x >= 0; x--) {
+			for (int y = dimension - 1; y >= 0; y--) {
+				if (isTile(x, y, rotation)) {
+					return x; // returns the current column
+				}
+			}
+		}
+		return -1;
+	}
+	
+	/**
+	 * Scans the piece from right to left searching for a tile, and 
+	 * returns when a tile is found.
+	 * @param rotation - current rotation of the piece
+	 * @return the first found tile's location, starting from bottom-right to up-left
+	 */
+	public int getLowermostTile(int rotation) {
+		for (int y = dimension - 1; y >= 0; y--) {
+			for (int x = dimension - 1; x >= 0; x--) {
+				if (isTile(x, y, rotation)) {
+					return y;
+				}
+			}
+		}
+		return -1;
+	}
+	
 	public boolean[][] getTiles() {
 		return tiles;
 	}
@@ -250,5 +305,4 @@ public enum Tile {
 	public int getSpawnRow() {
 		return spawnRow;
 	}
-
 }
