@@ -37,17 +37,17 @@ public class Natetris extends JFrame {
 	/**
 	 * The quantity of different tile types 
 	 */
-	public static final int TILES_COUNT = TilePiece.values().length;
+	public static final int TILES_COUNT = Piece.values().length;
 	
 	/**
 	 * The current piece that is falling down
 	 */
-	private TilePiece currentPiece;
+	private Piece currentPiece;
 
 	/**
 	 * The next piece that will be on the game 
 	 */
-	private TilePiece nextPiece;
+	private Piece nextPiece;
 	
 	/**
 	 * The column that the current piece is located
@@ -106,7 +106,7 @@ public class Natetris extends JFrame {
 					case KeyEvent.VK_NUMPAD6:
 					case KeyEvent.VK_D:
 					case KeyEvent.VK_RIGHT:
-						if (!isGamePaused && board.isPossibleToMovePiece(currentPiece, currentRow, currentCol+1)) {
+						if (!isGamePaused && board.isPossibleToMovePiece(currentPiece, currentCol+1, currentRow, currentRotation)) {
 							currentCol++;
 						}
 						break;
@@ -115,7 +115,7 @@ public class Natetris extends JFrame {
 					case KeyEvent.VK_NUMPAD4:
 					case KeyEvent.VK_A:
 					case KeyEvent.VK_LEFT:
-						if (!isGamePaused && board.isPossibleToMovePiece(currentPiece, currentRow, currentCol-1)) {
+						if (!isGamePaused && board.isPossibleToMovePiece(currentPiece, currentCol-1, currentRow, currentRotation)) {
 							currentCol--;
 						}
 						break;
@@ -174,10 +174,10 @@ public class Natetris extends JFrame {
 			renderGame();
 			
 			try {
-				/* FIXME adjust FPS.
+				/* FIXME adjust speed.
 				 * clock 101: Probably going to create a Clock class measuring time between cycles
 				 */
-				Thread.sleep(800); 
+				Thread.sleep(250); 
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			} 
@@ -189,11 +189,28 @@ public class Natetris extends JFrame {
 	 * Handles the game's logic
 	 */
 	private void updateGame() {
-		if (board.isPossibleToMovePiece(currentPiece, currentRow + 1, currentCol)) {
+		if (board.isPossibleToMovePiece(currentPiece, currentCol, currentRow + 1, currentRotation)) {
 			currentRow++;
 		} else {
-			
+			if (pieceCollided(currentRow + 1)) {
+				// adds piece to 
+				board.addPieceToTheBoard(currentPiece, currentCol, currentRow, currentRotation);
+				spawnNewPiece();
+				
+			}
 		}
+	}
+	
+	/**
+	 * Checks if the current piece has collided with another piece or the bottom of the board 
+	 * @return boolean
+	 */
+	private boolean pieceCollided(int row) {
+		if ((row + currentPiece.getLowermostTile(currentRotation)) >= Board.VISIBLE_ROW_COUNT) {
+			return true;
+		}
+		
+		return false;
 	}
 	
 	/**
@@ -212,7 +229,7 @@ public class Natetris extends JFrame {
 		this.isGameOver = false;
 		this.isGamePaused = false;
 		this.score = 0L;
-		this.nextPiece = TilePiece.values()[random.nextInt(TILES_COUNT)];
+		this.nextPiece = Piece.values()[random.nextInt(TILES_COUNT)];
 		this.board.clear();
 		spawnNewPiece();
 	}
@@ -226,7 +243,7 @@ public class Natetris extends JFrame {
 		this.currentRotation = 0;
 		this.currentCol = currentPiece.getSpawnCol();
 		this.currentRow = currentPiece.getSpawnRow();
-		this.nextPiece = TilePiece.values()[random.nextInt(TILES_COUNT)];
+		this.nextPiece = Piece.values()[random.nextInt(TILES_COUNT)];
 	}
 	
 	public void rotateCurrentPiece(int newDirection) {
@@ -239,7 +256,7 @@ public class Natetris extends JFrame {
 			currentCol--;
 		} 
 		
-		if (board.isPossibleToMovePiece(currentPiece, currentRow, currentCol)) {
+		if (board.isPossibleToMovePiece(currentPiece,  currentCol, currentRow, currentRotation)) {
 			this.currentRotation = newDirection;
 		}
 	}
@@ -260,11 +277,11 @@ public class Natetris extends JFrame {
 		this.isGamePaused = value;
 	}
 	
-	public TilePiece getCurrentPiece() {
+	public Piece getCurrentPiece() {
 		return currentPiece;
 	}
 	
-	public TilePiece getNextPiece() {
+	public Piece getNextPiece() {
 		return nextPiece;
 	}
 

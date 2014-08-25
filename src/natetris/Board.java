@@ -65,22 +65,22 @@ public class Board extends JPanel {
 	/**
 	 * The group of tiles that compose the entire board
 	 */
-	private TilePiece[][] tiles;
+	private Piece[][] tiles;
 	
 	/**
 	 * The game instance
 	 */
 	private Natetris natetris;
 	
-	private void drawTile(int x, int y, Graphics g) {
-		g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-	}
-	
 	public Board(Natetris natetris) {
 		this.natetris = natetris;
-		tiles = new TilePiece[ROW_COUNT][COL_COUNT];
+		tiles = new Piece[COL_COUNT][ROW_COUNT];
 		setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
 		setBackground(Color.BLACK);
+	}
+	
+	private void drawTile(int x, int y, Graphics g) {
+		g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 	}
 	
 	@Override
@@ -112,10 +112,11 @@ public class Board extends JPanel {
 		} else {
 			// game is running
 			
-			for (int x = 0; x < VISIBLE_ROW_COUNT; x++) {
-				for (int y = 0; y < COL_COUNT; y++) {
+			for (int x = COL_COUNT - 1; x > 0; x--) {
+				for (int y = VISIBLE_ROW_COUNT - 1; y > 0; y--) {
 					if (tiles[x][y] != null) {
-						// TODO draw persistent tiles
+						g.setColor(tiles[x][y].getColor());
+						drawTile(x, y, g);
 					}
 				}
 			}
@@ -123,7 +124,7 @@ public class Board extends JPanel {
 			/*
 			 * draws current tile
 			 */
-			TilePiece currentPiece = natetris.getCurrentPiece();
+			Piece currentPiece = natetris.getCurrentPiece();
 			int currentDirection = natetris.getPieceRotation();
 			int currentRow = natetris.getCurrentRow();
 			int currentCol = natetris.getCurrentCol();
@@ -162,16 +163,28 @@ public class Board extends JPanel {
 		g.setColor(Color.WHITE);
 		g.drawRect(0, 0, BOARD_WIDTH, BOARD_HEIGHT);
 	}
+	
+	public void addPieceToTheBoard(Piece piece, int boardCol, int boardRow, int rotation) {
+		for (int pieceCol = 0; pieceCol < piece.getDimension(); pieceCol++) {
+			for (int pieceRow = 0; pieceRow < piece.getDimension(); pieceRow++) {
+				if (piece.isTile(pieceCol, pieceRow, rotation)) {
+					addPiece(piece, boardCol + pieceCol, boardRow + pieceRow);
+				}
+			}
+		}
+	}
+	
+	private void addPiece(Piece piece, int col, int row) {
+		tiles[col][row] = piece;
+	}
 
-	public boolean isPossibleToMovePiece(TilePiece piece, int row, int col) {
+	public boolean isPossibleToMovePiece(Piece piece, int col, int row, int pieceRotation) {
 		// check if it is a valid column
-		if (col < (-piece.getLeftmostTile(natetris.getPieceRotation())) ||
-				(col + piece.getRightmostTile(natetris.getPieceRotation())) >= COL_COUNT) {
-			
+		if (col < (-piece.getLeftmostTile(pieceRotation)) || (col + piece.getRightmostTile(pieceRotation)) >= COL_COUNT) {
 			return false;
 		}
 		// check if it is a valid row
-		if ((row + piece.getLowermostTile(natetris.getPieceRotation())) >= VISIBLE_ROW_COUNT) {
+		if ((row + piece.getLowermostTile(pieceRotation)) >= VISIBLE_ROW_COUNT) {
 			return false;
 		}
 		return true;
