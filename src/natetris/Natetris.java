@@ -192,25 +192,15 @@ public class Natetris extends JFrame {
 		if (board.isPossibleToMovePiece(currentPiece, currentCol, currentRow + 1, currentRotation)) {
 			currentRow++;
 		} else {
-			if (pieceCollided(currentRow + 1)) {
-				// adds piece to 
-				board.addPieceToTheBoard(currentPiece, currentCol, currentRow, currentRotation);
+			/*
+			 * Piece hit either the ground or another piece, so we add it to the board and get a new one :-) 
+			 */
+			board.addPieceToTheBoard(currentPiece, currentCol, currentRow, currentRotation);
+			
+			if (!isGameOver) {
 				spawnNewPiece();
-				
 			}
 		}
-	}
-	
-	/**
-	 * Checks if the current piece has collided with another piece or the bottom of the board 
-	 * @return boolean
-	 */
-	private boolean pieceCollided(int row) {
-		if ((row + currentPiece.getLowermostTile(currentRotation)) >= Board.VISIBLE_ROW_COUNT) {
-			return true;
-		}
-		
-		return false;
 	}
 	
 	/**

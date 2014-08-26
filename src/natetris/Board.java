@@ -11,18 +11,13 @@ public class Board extends JPanel {
 
 	private static final long serialVersionUID = 4858532419981185927L;
 	
-	/**
-	 * The number of columns in the board
-	 */
 	public static final int COL_COUNT = 10;
 	
-	/**
-	 * The number of rows in the board
-	 */
 	public static final int ROW_COUNT = 22;
 	
 	/**
-	 * The number of visible rows in the board
+	 * The number of visible rows in the board. Two of them need to stay hid
+	 * so that the piece doesn't show up magically 
 	 */
 	public static final int VISIBLE_ROW_COUNT = 20;
 	
@@ -45,7 +40,7 @@ public class Board extends JPanel {
 	public static final int PANEL_HEIGHT = (BORDER_WIDTH * 2) + (VISIBLE_ROW_COUNT * TILE_SIZE);
 	
 	/**
-	 * The dimensions of the actual shown board
+	 * The dimensions of the actually visible board
 	 */
 	public static final int BOARD_WIDTH = PANEL_WIDTH - (BORDER_WIDTH * 2);
 	public static final int BOARD_HEIGHT = PANEL_HEIGHT - (BORDER_WIDTH * 2);
@@ -67,9 +62,6 @@ public class Board extends JPanel {
 	 */
 	private Piece[][] tiles;
 	
-	/**
-	 * The game instance
-	 */
 	private Natetris natetris;
 	
 	public Board(Natetris natetris) {
@@ -184,10 +176,21 @@ public class Board extends JPanel {
 			return false;
 		}
 		// check if it is a valid row
-		if ((row + piece.getLowermostTile(pieceRotation)) >= VISIBLE_ROW_COUNT) {
+		if (twoPiecesCollided(piece, col, row, pieceRotation) || (row + piece.getLowermostTile(pieceRotation)) >= VISIBLE_ROW_COUNT) {
 			return false;
 		}
 		return true;
+	}
+	
+	public boolean twoPiecesCollided(Piece piece, int col, int row, int pieceRotation) {
+		for (int pieceCol = 0; pieceCol < piece.getDimension(); pieceCol++) {
+			for (int pieceRow = 0; pieceRow < piece.getDimension(); pieceRow++) {
+				if (piece.isTile(pieceCol, pieceRow, pieceRotation) && tiles[col + pieceCol][row + pieceRow] != null) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	/**
