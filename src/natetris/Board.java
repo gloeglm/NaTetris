@@ -11,15 +11,17 @@ public class Board extends JPanel {
 
 	private static final long serialVersionUID = 4858532419981185927L;
 	
-	public static final int COL_COUNT = 10;
-	
-	public static final int ROW_COUNT = 22;
-	
 	/**
 	 * The number of visible rows in the board. Two of them need to stay hid
 	 * so that the piece doesn't show up magically 
 	 */
+	public static final int HIDDEN_ROW_COUNT = 2;
+
 	public static final int VISIBLE_ROW_COUNT = 20;
+	
+	public static final int ROW_COUNT = VISIBLE_ROW_COUNT + HIDDEN_ROW_COUNT;
+	
+	public static final int COL_COUNT = 10;
 	
 	/**
 	 * The size of each individual tile
@@ -104,8 +106,11 @@ public class Board extends JPanel {
 		} else {
 			// game is running
 			
-			for (int x = COL_COUNT - 1; x >= 0; x--) {
-				for (int y = VISIBLE_ROW_COUNT - 1; y >= 0; y--) {
+			/**
+			 * draws landed pieces
+			 */
+			for (int x = 0; x < COL_COUNT; x++) {
+				for (int y = 0; y < ROW_COUNT; y++) {
 					if (tiles[x][y] != null) {
 						g.setColor(tiles[x][y].getColor());
 						drawTile(x, y, g);
@@ -113,8 +118,8 @@ public class Board extends JPanel {
 				}
 			}
 			
-			/*
-			 * draws current tile
+			/**
+			 * draws current piece
 			 */
 			Piece currentPiece = natetris.getCurrentPiece();
 			int currentDirection = natetris.getPieceRotation();
