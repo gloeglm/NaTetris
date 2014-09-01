@@ -73,10 +73,6 @@ public class Board extends JPanel {
 		setBackground(Color.BLACK);
 	}
 	
-	private void drawTile(int x, int y, Graphics g) {
-		g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-	}
-	
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -126,18 +122,18 @@ public class Board extends JPanel {
 			int currentRow = natetris.getCurrentRow();
 			int currentCol = natetris.getCurrentCol();
 			g.setColor(currentPiece.getColor());
-			for (int x = 0; x < currentPiece.getDimension(); x++) {
-				for (int y = 0; y < currentPiece.getDimension(); y++) {
-					if (currentPiece.isTile(x, y, currentDirection)) {
-						// g.setColor() needed because of ELSE statement; removable in the future
-						g.setColor(currentPiece.getColor()); 
-						drawTile(currentCol + x, currentRow + y, g);
+			for (int col = 0; col < currentPiece.getDimension(); col++) {
+				for (int row = 0; row < currentPiece.getDimension(); row++) {
+					if (currentPiece.isTile(col, row, currentDirection) && (currentRow + row) >= 2) {
+//						g.setColor() needed because of ELSE statement; removable in the future
+//						g.setColor(currentPiece.getColor()); 
+						drawTile(currentCol + col, (currentRow + row - HIDDEN_ROW_COUNT), g);
 					} 
-					else { 
-						// gray background added for debugging reasons
-						g.setColor(Color.gray);
-						g.fillRect((currentCol + x) * TILE_SIZE, (currentRow + y) * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-					}
+//					else { 
+//						// gray background added for debugging reasons
+//						g.setColor(Color.gray);
+//						g.fillRect((currentCol + x) * TILE_SIZE, (currentRow + y - HIDDEN_ROW_COUNT) * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+//					}
 				}
 			}
 			
@@ -207,5 +203,9 @@ public class Board extends JPanel {
 				tiles[x][y] = null;
 			}
 		}
+	}
+	
+	private void drawTile(int x, int y, Graphics g) {
+		g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 	}
 }
