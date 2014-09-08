@@ -107,9 +107,9 @@ public class Board extends JPanel {
 			 */
 			for (int x = 0; x < COL_COUNT; x++) {
 				for (int y = 0; y < ROW_COUNT; y++) {
-					if (tiles[x][y] != null) {
-						g.setColor(tiles[x][y].getColor());
-						drawTile(x, y, g);
+					Piece piece = tiles[x][y];
+					if (piece != null) {
+						drawTile(piece, x, y - 1, g);
 					}
 				}
 			}
@@ -121,19 +121,11 @@ public class Board extends JPanel {
 			int currentDirection = natetris.getPieceRotation();
 			int currentRow = natetris.getCurrentRow();
 			int currentCol = natetris.getCurrentCol();
-			g.setColor(currentPiece.getColor());
 			for (int col = 0; col < currentPiece.getDimension(); col++) {
 				for (int row = 0; row < currentPiece.getDimension(); row++) {
 					if (currentPiece.isTile(col, row, currentDirection) && (currentRow + row) >= 2) {
-//						g.setColor() needed because of ELSE statement; removable in the future
-//						g.setColor(currentPiece.getColor()); 
-						drawTile(currentCol + col, (currentRow + row - HIDDEN_ROW_COUNT), g);
-					} 
-//					else { 
-//						// gray background added for debugging reasons
-//						g.setColor(Color.gray);
-//						g.fillRect((currentCol + x) * TILE_SIZE, (currentRow + y - HIDDEN_ROW_COUNT) * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-//					}
+						drawTile(currentPiece, currentCol + col, (currentRow + row - HIDDEN_ROW_COUNT), g);
+					}
 				}
 			}
 			
@@ -147,7 +139,6 @@ public class Board extends JPanel {
 			for (int y = 1; y < COL_COUNT; y++) {
 				g.drawLine((y * TILE_SIZE), 0, (y * TILE_SIZE), BOARD_HEIGHT);
 			}
-			
 		}
 		
 		/*
@@ -172,26 +163,31 @@ public class Board extends JPanel {
 	}
 
 	public boolean isPossibleToMovePiece(Piece piece, int col, int row, int pieceRotation) {
-		// check if it is a valid column
+		/*
+		 *  check if it is a valid column
+		 */
 		if (col < (-piece.getLeftmostTile(pieceRotation)) || (col + piece.getRightmostTile(pieceRotation)) >= COL_COUNT) {
 			return false;
 		}
-		// check if it is a valid row
-		if (twoPiecesCollided(piece, col, row, pieceRotation) || (row + piece.getLowermostTile(pieceRotation)) >= VISIBLE_ROW_COUNT) {
+		/*
+		 *  check if it is a valid row
+		 */
+		if ((row + piece.getLowermostTile(pieceRotation)) > VISIBLE_ROW_COUNT) {
 			return false;
 		}
-		return true;
-	}
-	
-	public boolean twoPiecesCollided(Piece piece, int col, int row, int pieceRotation) {
+		
+		/*
+		 * Checks if two pieces collided
+		 */
 		for (int pieceCol = 0; pieceCol < piece.getDimension(); pieceCol++) {
 			for (int pieceRow = 0; pieceRow < piece.getDimension(); pieceRow++) {
 				if (piece.isTile(pieceCol, pieceRow, pieceRotation) && tiles[col + pieceCol][row + pieceRow] != null) {
-					return true;
+					return false;
 				}
 			}
 		}
-		return false;
+		
+		return true;
 	}
 	
 	/**
@@ -205,7 +201,8 @@ public class Board extends JPanel {
 		}
 	}
 	
-	private void drawTile(int x, int y, Graphics g) {
+	private void drawTile(Piece piece, int x, int y, Graphics g) {
+		g.setColor(piece.getColor());
 		g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 	}
 }
