@@ -106,10 +106,10 @@ public class Board extends JPanel {
 			 * draws landed pieces
 			 */
 			for (int x = 0; x < COL_COUNT; x++) {
-				for (int y = 0; y < ROW_COUNT; y++) {
+				for (int y = HIDDEN_ROW_COUNT; y < ROW_COUNT; y++) {
 					Piece piece = tiles[x][y];
 					if (piece != null) {
-						drawTile(piece, x, y - 1, g);
+						drawTile(piece, x, (y - HIDDEN_ROW_COUNT), g);
 					}
 				}
 			}
@@ -172,7 +172,7 @@ public class Board extends JPanel {
 		/*
 		 *  check if it is a valid row
 		 */
-		if ((row + piece.getLowermostTile(pieceRotation)) > VISIBLE_ROW_COUNT) {
+		if ((row + piece.getLowermostTile(pieceRotation)) >= ROW_COUNT) {
 			return false;
 		}
 		
