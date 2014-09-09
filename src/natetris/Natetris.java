@@ -177,7 +177,8 @@ public class Natetris extends JFrame {
 				/* FIXME adjust speed.
 				 * clock 101: Probably going to create a Clock class measuring time between cycles
 				 */
-				Thread.sleep(250); 
+				
+					Thread.sleep(200);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			} 
@@ -234,6 +235,13 @@ public class Natetris extends JFrame {
 		this.currentCol = currentPiece.getSpawnCol();
 		this.currentRow = currentPiece.getSpawnRow();
 		this.nextPiece = Piece.values()[random.nextInt(TILES_COUNT)];
+		
+		/*
+		 * if current piece already spawned in an invalid location, the game is over
+		 */
+		if (!board.isPossibleToMovePiece(currentPiece, currentCol, currentRow, currentRotation)) {
+			isGameOver = true;
+		}
 	}
 	
 	public void rotateCurrentPiece(int newDirection) {
@@ -265,6 +273,10 @@ public class Natetris extends JFrame {
 	
 	public void setGamePaused(boolean value) {
 		this.isGamePaused = value;
+	}
+	
+	public void setGameOver() {
+		this.isGameOver = true;
 	}
 	
 	public Piece getCurrentPiece() {
