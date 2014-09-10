@@ -135,13 +135,13 @@ public class Natetris extends JFrame {
 					// pause
 					case KeyEvent.VK_P:
 						if (isGamePaused) {
-							setGamePaused(false);
+							isGamePaused = false;
 						} else {
 							// TODO clock: stops clock
-							setGamePaused(true);
+							isGamePaused = true;
 						}
 						break;
-				}		
+				}
 			}
 			
 			@Override
@@ -152,10 +152,8 @@ public class Natetris extends JFrame {
 		
 		this.board = new Board(this);
 		this.infoPanel = new InfoPanel(this);
-		
 		add(board, BorderLayout.WEST);
 		add(infoPanel, BorderLayout.EAST);
-		
 		pack();
 		setVisible(true);
 	}
@@ -177,8 +175,7 @@ public class Natetris extends JFrame {
 				/* FIXME adjust speed.
 				 * clock 101: Probably going to create a Clock class measuring time between cycles
 				 */
-				
-					Thread.sleep(200);
+				Thread.sleep(200);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			} 
@@ -269,14 +266,6 @@ public class Natetris extends JFrame {
 
 	public boolean isFirstGame() {
 		return isFirstGame;
-	}
-	
-	public void setGamePaused(boolean value) {
-		this.isGamePaused = value;
-	}
-	
-	public void setGameOver() {
-		this.isGameOver = true;
 	}
 	
 	public Piece getCurrentPiece() {
