@@ -108,7 +108,7 @@ public class Board extends JPanel {
 			for (int x = 0; x < COL_COUNT; x++) {
 				for (int y = HIDDEN_ROW_COUNT; y < ROW_COUNT; y++) {
 					Piece piece = tiles[x][y];
-					if (piece != null) {
+					if (isOccupied(x, y)) {
 						drawTile(piece, x, (y - HIDDEN_ROW_COUNT), g);
 					}
 				}
@@ -194,11 +194,51 @@ public class Board extends JPanel {
 	 * Clears the entire board, setting all slots to null
 	 */
 	public void clear() {
-		for (int x = 0; x < tiles.length; x++) {
-			for (int y = 0; y < tiles[x].length; y++) {
-				tiles[x][y] = null;
+		for (int col = 0; col < tiles.length; col++) {
+			for (int row = 0; row < tiles[col].length; row++) {
+				tiles[col][row] = null;
 			}
 		}
+	}
+	
+	/**
+	 * Checks if there are lines completely filled up, so that they can
+	 * be destroyed
+	 * @param piece - current piece at the game
+	 * @return number of rows completely filled up
+	 */
+	public int checkLines(Piece piece) {
+		int clearedLines = 0;
+		for (int row = 0; row < ROW_COUNT; row++) {
+			if (filledLine(row)) {
+				clearedLines++;
+			}
+		}
+		return clearedLines;
+	}
+	
+	/**
+	 * Checks if the line is complete horizontally
+	 * @param row - the checked row
+	 * @return true if complete, false otherwise
+	 */
+	private boolean filledLine(int row) {
+		for (int col = 0; col < COL_COUNT; col++) {
+			if (!isOccupied(col, row)) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Checks if there is a piece hanging at the determined position
+	 * @param x - column to be tested
+	 * @param y - row to be tested
+	 * @return
+	 */
+	private boolean isOccupied(int x, int y) {
+		return (tiles[x][y] != null);
 	}
 	
 	private void drawTile(Piece piece, int x, int y, Graphics g) {

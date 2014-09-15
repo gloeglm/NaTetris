@@ -32,7 +32,7 @@ public class Natetris extends JFrame {
 	/**
 	 * The player's current score 
      */
-	private long score;
+	private int score;
 	
 	/**
 	 * The quantity of different tile types 
@@ -175,7 +175,7 @@ public class Natetris extends JFrame {
 				/* FIXME adjust speed.
 				 * clock 101: Probably going to create a Clock class measuring time between cycles
 				 */
-				Thread.sleep(200);
+				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			} 
@@ -194,6 +194,8 @@ public class Natetris extends JFrame {
 			 * Piece hit either the ground or another piece, so we add it to the board and get a new one :-) 
 			 */
 			board.addPieceToTheBoard(currentPiece, currentCol, currentRow, currentRotation);
+			
+			score += 75 << board.checkLines(currentPiece);
 			
 			if (!isGameOver) {
 				spawnNewPiece();
@@ -216,7 +218,7 @@ public class Natetris extends JFrame {
 		this.isFirstGame = false;
 		this.isGameOver = false;
 		this.isGamePaused = false;
-		this.score = 0L;
+		this.score = 0;
 		this.nextPiece = Piece.values()[random.nextInt(TILES_COUNT)];
 		this.board.clear();
 		spawnNewPiece();
