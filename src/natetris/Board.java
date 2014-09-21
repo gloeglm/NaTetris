@@ -218,7 +218,7 @@ public class Board extends JPanel {
 	}
 	
 	/**
-	 * Checks if the line is complete horizontally
+	 * Checks if {@code row} is completed horizontally, and then clears it out of the board
 	 * @param row - the checked row
 	 * @return true if complete, false otherwise
 	 */
@@ -228,6 +228,14 @@ public class Board extends JPanel {
 				return false;
 			}
 		}
+		
+		/* lines is filled up, so we move down all the lines above it */
+		for (int unfilledRow = row; unfilledRow > 0; unfilledRow--) {
+			for (int col = 0; col < COL_COUNT; col++) {
+				tiles[col][unfilledRow] = tiles[col][unfilledRow-1];
+			}
+		}
+		
 		return true;
 	}
 	

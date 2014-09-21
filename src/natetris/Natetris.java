@@ -195,7 +195,10 @@ public class Natetris extends JFrame {
 			 */
 			board.addPieceToTheBoard(currentPiece, currentCol, currentRow, currentRotation);
 			
-			score += 75 << board.checkLines(currentPiece);
+			int clearedLines = board.checkLines(currentPiece);
+			if (clearedLines > 0) {
+				score += 75 << clearedLines;
+			}
 			
 			if (!isGameOver) {
 				spawnNewPiece();
@@ -219,7 +222,7 @@ public class Natetris extends JFrame {
 		this.isGameOver = false;
 		this.isGamePaused = false;
 		this.score = 0;
-		this.nextPiece = Piece.values()[random.nextInt(TILES_COUNT)];
+		this.nextPiece = Piece.values()[0];//Piece.values()[random.nextInt(TILES_COUNT)];
 		this.board.clear();
 		spawnNewPiece();
 	}
@@ -233,7 +236,7 @@ public class Natetris extends JFrame {
 		this.currentRotation = 0;
 		this.currentCol = currentPiece.getSpawnCol();
 		this.currentRow = currentPiece.getSpawnRow();
-		this.nextPiece = Piece.values()[random.nextInt(TILES_COUNT)];
+		this.nextPiece = Piece.values()[0];//Piece.values()[random.nextInt(TILES_COUNT)];
 		
 		/*
 		 * if current piece already spawned in an invalid location, the game is over
