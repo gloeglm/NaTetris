@@ -70,7 +70,7 @@ public class InfoPanel extends JPanel {
 		
 		String points = "Points: ";
 		g.drawString(points, 0, offset);
-		g.drawString(Long.toString(Natetris.getScore()), g.getFontMetrics().stringWidth(points), offset);
+		g.drawString(Long.toString(natetris.getScore()), g.getFontMetrics().stringWidth(points), offset);
 		offset += SPACE_BETWEEN_STRINGS;
 		
 		g.setFont(SMALL_FONT);
