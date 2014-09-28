@@ -7,6 +7,12 @@ import java.util.Random;
 
 import javax.swing.JFrame;
 
+/**
+ * The {@code Natetris} class is responsible for the flow control of the game, setting up key listeners and
+ * time control.
+ * @author natan
+ *
+ */
 public class Natetris extends JFrame {
 
 	private static final long serialVersionUID = 6321156896206333624L;
@@ -63,6 +69,11 @@ public class Natetris extends JFrame {
 	 * The falling piece current rotation
 	 */
 	private int currentRotation;
+	
+	/**
+	 * The timer of the game, which controlls the timer between game cycles
+	 */
+	private Timer timer;
 	
 	/**
 	 * Random generator
@@ -166,11 +177,18 @@ public class Natetris extends JFrame {
 	 */
 	public void startGame() {
 		this.random = new Random();
-		resetGame();
+		resetGame(); // FIXME: remove as soon as timer is functional
 		this.isFirstGame = true;
+		this.timer = new Timer();
+		timer.setPaused(true);
 		
 		while (true) {
-			updateGame();
+			
+			timer.update();
+			
+			if (timer.completedOneCycle()) {
+				updateGame();
+			}
 			renderGame();
 			
 			try {
