@@ -25,9 +25,9 @@ public class Natetris extends JFrame {
 	 * Game control variables.
 	 * isNewGame represents if the game hasn't started yet. Occurs only when the game is launched
 	 */
-	private boolean firstGame;
-	private boolean gamePaused;
-	private boolean gameOver;
+	private boolean isFirstGame;
+	private boolean isGamePaused;
+	private boolean isGameOver;
 	
 	/**
 	 * The player's current score 
@@ -90,7 +90,7 @@ public class Natetris extends JFrame {
 				switch (e.getKeyCode()) {
 					// start new game
 					case KeyEvent.VK_ENTER:
-						if (gameOver || firstGame) {
+						if (isGameOver || isFirstGame) {
 							resetGame();
 						}
 						break;
@@ -106,7 +106,7 @@ public class Natetris extends JFrame {
 					case KeyEvent.VK_NUMPAD6:
 					case KeyEvent.VK_D:
 					case KeyEvent.VK_RIGHT:
-						if (!gamePaused && board.isPossibleToMovePiece(currentPiece, currentCol+1, currentRow, currentRotation)) {
+						if (!isGamePaused && board.isPossibleToMovePiece(currentPiece, currentCol+1, currentRow, currentRotation)) {
 							currentCol++;
 						}
 						break;
@@ -115,30 +115,32 @@ public class Natetris extends JFrame {
 					case KeyEvent.VK_NUMPAD4:
 					case KeyEvent.VK_A:
 					case KeyEvent.VK_LEFT:
-						if (!gamePaused && board.isPossibleToMovePiece(currentPiece, currentCol-1, currentRow, currentRotation)) {
+						if (!isGamePaused && board.isPossibleToMovePiece(currentPiece, currentCol-1, currentRow, currentRotation)) {
 							currentCol--;
 						}
 						break;
-						
+					
+					// rotate left
 					case KeyEvent.VK_Q:
-						if (!gamePaused) {
+						if (!isGamePaused) {
 							rotateCurrentPiece((currentRotation == 0) ? 3 : currentRotation-1);
 						}
 						break;
 						
+					// rotate right
 					case KeyEvent.VK_E:
-						if (!gamePaused) {
+						if (!isGamePaused) {
 							rotateCurrentPiece((currentRotation == 3) ? 0 : currentRotation+1);
 						}
 						break;
 						
 					// pause
 					case KeyEvent.VK_P:
-						if (gamePaused) {
-							gamePaused = false;
+						if (isGamePaused) {
+							isGamePaused = false;
 						} else {
 							// TODO clock: stops clock
-							gamePaused = true;
+							isGamePaused = true;
 						}
 						break;
 				}
@@ -165,7 +167,7 @@ public class Natetris extends JFrame {
 	public void startGame() {
 		this.random = new Random();
 		resetGame();
-		this.firstGame = true;
+		this.isFirstGame = true;
 		
 		while (true) {
 			updateGame();
@@ -200,7 +202,7 @@ public class Natetris extends JFrame {
 				score += 75 << clearedLines;
 			}
 			
-			if (!gameOver) {
+			if (!isGameOver) {
 				spawnNewPiece();
 			}
 		}
@@ -218,9 +220,9 @@ public class Natetris extends JFrame {
 	 * Sets all default variables to their initial values
 	 */
 	private void resetGame() {
-		this.firstGame = false;
-		this.gameOver = false;
-		this.gamePaused = false;
+		this.isFirstGame = false;
+		this.isGameOver = false;
+		this.isGamePaused = false;
 		this.score = 0;
 		this.nextPiece = Piece.values()[random.nextInt(TILES_COUNT)];
 		this.board.clear();
@@ -242,7 +244,7 @@ public class Natetris extends JFrame {
 		 * if current piece already spawned in an invalid location, the game is over
 		 */
 		if (!board.isPossibleToMovePiece(currentPiece, currentCol, currentRow, currentRotation)) {
-			gameOver = true;
+			isGameOver = true;
 		}
 	}
 	
@@ -262,15 +264,15 @@ public class Natetris extends JFrame {
 	}
 	
 	public boolean isGamePaused() {
-		return gamePaused;
+		return isGamePaused;
 	}
 
 	public boolean isGameOver() {
-		return gameOver;
+		return isGameOver;
 	}
 
 	public boolean isFirstGame() {
-		return firstGame;
+		return isFirstGame;
 	}
 	
 	public Piece getCurrentPiece() {
@@ -298,7 +300,7 @@ public class Natetris extends JFrame {
 	}
 
 	public boolean isGameRunning() {
-		return !(firstGame || gameOver || gamePaused);
+		return !(isFirstGame || isGameOver || isGamePaused);
 	}
 	
 	public static void main(String[] args) {
