@@ -16,30 +16,62 @@ public class Timer {
 	 */
 	private long lastUpdate;
 	
+	/**
+	 * Represents how many cycles are still left on queue
+	 */
+	private int currentCycles;
+	
+	/**
+	 * Represents how much time has been passed until a cycle is complete
+	 */
+	private float timeToNextCycle;
+	
 	Timer(float cyclesPerSecond) {
 		setCyclesPerSecond(cyclesPerSecond);
 		reset();
 	}
 	
-	private void setCyclesPerSecond(float cyclesPerSecond) {
+	/**
+	 * Sets the amount of cycles that occur every second  
+	 * @param cyclesPerSecond
+	 */
+	public void setCyclesPerSecond(float cyclesPerSecond) {
 		this.millisPerCycle = (1.0f / cyclesPerSecond) * 1000;
 	}
 	
+	/**
+	 * Resets the time to it's default values
+	 */
 	public void reset() {
 		this.isPaused = false;
+		this.currentCycles = 0;
 		this.lastUpdate = getCurrentTime();
 	}
 	
+	/**
+	 * Updates the amount of cycles left to reproduce
+	 */
 	public void update() {
-		long currentTime = System.nanoTime();
-		float delta = (float)(currentTime - lastUpdate);
+		long currentUpdate = getCurrentTime();
+		float delta = (float)(currentUpdate - lastUpdate) + timeToNextCycle;
 		if (!isPaused) {
-			// TODO  floor(delta / millisPerCycle)   
+			currentCycles += (int)Math.floor((delta / millisPerCycle));
+			timeToNextCycle = delta % millisPerCycle;
 		}
+		lastUpdate = currentUpdate;
+		
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public boolean completedOneCycle() {
-		return true; // TODO
+		if (currentCycles > 0) {
+			currentCycles--;
+			return true;
+		}
+		return false;
 	}
 	
 	/**

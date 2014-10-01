@@ -18,6 +18,26 @@ public class Natetris extends JFrame {
 	private static final long serialVersionUID = 6321156896206333624L;
 	
 	/**
+	 * The number of milliseconds between each frame to be displayed
+	 */
+	private static final long FRAME_RATE = 1000L / 50L;
+	
+	/**
+	 * The values that define the game update speed. The default speed 
+	 * is replaced with the faster speed whenever the player hits the accelerating 
+	 * key, and then gets back to normal whenever the player releases such key. 
+	 */
+	private static final float DEFAULT_SPEED = 1.0f;
+	private static final float FAST_FALLING_SPEED = 10.0f;
+	
+	/**
+	 * The quantity of different kinds of pieces
+	 */
+	public static final int PIECES_COUNT = Piece.values().length;
+	
+	
+	
+	/**
 	 * The game board
 	 */
 	private Board board;
@@ -39,11 +59,6 @@ public class Natetris extends JFrame {
 	 * The player's current score 
      */
 	private int score;
-	
-	/**
-	 * The quantity of different tile types 
-	 */
-	public static final int TILES_COUNT = Piece.values().length;
 	
 	/**
 	 * The current piece that is falling down
@@ -103,6 +118,7 @@ public class Natetris extends JFrame {
 					case KeyEvent.VK_ENTER:
 						if (isGameOver || isFirstGame) {
 							resetGame();
+							timer.setPaused(false);
 						}
 						break;
 						
@@ -110,7 +126,7 @@ public class Natetris extends JFrame {
 					case KeyEvent.VK_NUMPAD2:
 					case KeyEvent.VK_S:
 					case KeyEvent.VK_DOWN:
-						// enhance tile's velocity
+						timer.setCyclesPerSecond(FAST_FALLING_SPEED);
 						break;
 						
 					// move right
@@ -148,10 +164,9 @@ public class Natetris extends JFrame {
 					// pause
 					case KeyEvent.VK_P:
 						if (isGamePaused) {
-							isGamePaused = false;
+							setGamePaused(false);
 						} else {
-							// TODO clock: stops clock
-							isGamePaused = true;
+							setGamePaused(true);
 						}
 						break;
 				}
@@ -159,7 +174,9 @@ public class Natetris extends JFrame {
 			
 			@Override
 			public void keyReleased(KeyEvent e) {
-				// TODO clock: when dropping-piece button is released, make game get back to original speed
+				if (e.getKeyCode() == KeyEvent.VK_S) {
+					timer.setCyclesPerSecond(DEFAULT_SPEED);
+				}
 			}
 		});
 		
@@ -177,25 +194,30 @@ public class Natetris extends JFrame {
 	 */
 	public void startGame() {
 		this.random = new Random();
-		resetGame(); // FIXME: remove as soon as timer is functional
 		this.isFirstGame = true;
-		this.timer = new Timer();
+		
+		this.timer = new Timer(DEFAULT_SPEED);
 		timer.setPaused(true);
 		
 		while (true) {
+			/*
+			 * we will keep track on how much time was needed for the 
+			 * game and graphics update to complete, and discount that 
+			 * on the frame rate control
+			 */
+			long begin = System.nanoTime();
 			
 			timer.update();
 			
 			if (timer.completedOneCycle()) {
 				updateGame();
 			}
+			
 			renderGame();
 			
+			long delta = (System.nanoTime() - begin) / 1000000L;
 			try {
-				/* FIXME adjust speed.
-				 * clock 101: Probably going to create a Clock class measuring time between cycles
-				 */
-				Thread.sleep(250);
+				Thread.sleep(FRAME_RATE - delta);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			} 
@@ -211,7 +233,7 @@ public class Natetris extends JFrame {
 			currentRow++;
 		} else {
 			/*
-			 * Piece hit either the ground or another piece, so we add it to the board and get a new one :-) 
+			 * Piece either hit the ground or another piece, so we add it to the board and get a new one :-) 
 			 */
 			board.addPieceToTheBoard(currentPiece, currentCol, currentRow, currentRotation);
 			
@@ -242,7 +264,7 @@ public class Natetris extends JFrame {
 		this.isGameOver = false;
 		this.isGamePaused = false;
 		this.score = 0;
-		this.nextPiece = Piece.values()[random.nextInt(TILES_COUNT)];
+		this.nextPiece = Piece.values()[random.nextInt(PIECES_COUNT)];
 		this.board.clear();
 		spawnNewPiece();
 	}
@@ -256,7 +278,7 @@ public class Natetris extends JFrame {
 		this.currentRotation = 0;
 		this.currentCol = currentPiece.getSpawnCol();
 		this.currentRow = currentPiece.getSpawnRow();
-		this.nextPiece = Piece.values()[random.nextInt(TILES_COUNT)];
+		this.nextPiece = Piece.values()[random.nextInt(PIECES_COUNT)];
 		
 		/*
 		 * if current piece already spawned in an invalid location, the game is over
@@ -267,17 +289,32 @@ public class Natetris extends JFrame {
 	}
 	
 	public void rotateCurrentPiece(int newDirection) {
+		/* 
+		 * newCol is used to rearrange the piece's location 
+		 * if it's rotated near enough the edge,
+		 * so that the piece doesn't clip out of the board
+		 */
+		int newCol = currentCol;
+		
+		/*
+		 * get the insets of the piece to check if the piece clips out of the board 
+		 */
+		int left = currentPiece.getLeftmostTile(newDirection);
+		int right = currentPiece.getRightmostTile(newDirection);
+		
 		// avoids the piece from overflowing the board when rotated near left edge
-		while ((currentCol + currentPiece.getLeftmostTile(newDirection)) < 0) {
-			currentCol++;
+		while ((newCol + left) < 0) {
+			newCol++;
 		}
+		
 		// avoids the piece from overflowing the board when rotated near right edge
-		while ((currentCol + currentPiece.getRightmostTile(newDirection)) >= Board.COL_COUNT) {
-			currentCol--;
+		while ((newCol + right) >= Board.COL_COUNT) {
+			newCol--;
 		} 
 		
 		if (board.isPossibleToMovePiece(currentPiece,  currentCol, currentRow, currentRotation)) {
 			this.currentRotation = newDirection;
+			this.currentCol = newCol;
 		}
 	}
 	
@@ -315,6 +352,11 @@ public class Natetris extends JFrame {
 
 	public int getPieceRotation() {
 		return currentRotation;
+	}
+	
+	private void setGamePaused(boolean value) {
+		timer.setPaused(value);
+		isGamePaused = value;
 	}
 
 	public boolean isGameRunning() {
