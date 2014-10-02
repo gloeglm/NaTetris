@@ -182,6 +182,7 @@ public class Natetris extends JFrame {
 			public void keyReleased(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_S) {
 					timer.setCyclesPerSecond(defaultSpeed);
+					timer.reset();
 				}
 			}
 		});
@@ -260,9 +261,9 @@ public class Natetris extends JFrame {
 			}
 			
 			/*
-			 * Sets the cool down to 50, which means that it will run (50 * FRAME_RATE) times
+			 * Sets the cool down to x, which means that it will run (x * FRAME_RATE) times
 			 */
-			fallingCooldown = 50;
+			fallingCooldown = 30;
 			
 			if (!isGameOver) {
 				spawnNewPiece();
