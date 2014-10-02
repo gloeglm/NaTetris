@@ -23,19 +23,9 @@ public class Natetris extends JFrame {
 	private static final long FRAME_RATE = 1000L / 50L;
 	
 	/**
-	 * The values that define the game update speed. The default speed 
-	 * is replaced with the faster speed whenever the player hits the accelerating 
-	 * key, and then gets back to normal whenever the player releases such key. 
-	 */
-	private static final float DEFAULT_SPEED = 1.0f;
-	private static final float FAST_FALLING_SPEED = 10.0f;
-	
-	/**
 	 * The quantity of different kinds of pieces
 	 */
 	public static final int PIECES_COUNT = Piece.values().length;
-	
-	
 	
 	/**
 	 * The game board
@@ -86,9 +76,23 @@ public class Natetris extends JFrame {
 	private int currentRotation;
 	
 	/**
-	 * The timer of the game, which controlls the timer between game cycles
+	 * The timer of the game, which controls the timer between game cycles
 	 */
 	private Timer timer;
+	
+	/**
+	 * Represents the cooldown that happen when a piece hits an obstacle at super-speed, 
+	 * so that the next piece doesn't come down immediately at a high speed
+	 */
+	private int fallingCooldown;
+	
+	/**
+	 * The values that define the game update speed. The default speed 
+	 * is replaced with the faster speed whenever the player hits the accelerating 
+	 * key, and then gets back to normal whenever the player releases such key. 
+	 */
+	private static float defaultSpeed = 1.0f;
+	private static float fastSpeed = 25.0f;
 	
 	/**
 	 * Random generator
@@ -126,7 +130,9 @@ public class Natetris extends JFrame {
 					case KeyEvent.VK_NUMPAD2:
 					case KeyEvent.VK_S:
 					case KeyEvent.VK_DOWN:
-						timer.setCyclesPerSecond(FAST_FALLING_SPEED);
+						if (!isGamePaused && fallingCooldown == 0) {
+							timer.setCyclesPerSecond(fastSpeed);
+						}
 						break;
 						
 					// move right
@@ -175,7 +181,7 @@ public class Natetris extends JFrame {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_S) {
-					timer.setCyclesPerSecond(DEFAULT_SPEED);
+					timer.setCyclesPerSecond(defaultSpeed);
 				}
 			}
 		});
@@ -196,7 +202,7 @@ public class Natetris extends JFrame {
 		this.random = new Random();
 		this.isFirstGame = true;
 		
-		this.timer = new Timer(DEFAULT_SPEED);
+		this.timer = new Timer(defaultSpeed);
 		timer.setPaused(true);
 		
 		while (true) {
@@ -214,6 +220,14 @@ public class Natetris extends JFrame {
 			}
 			
 			renderGame();
+			
+			/*
+			 * Decrement cooldown if needed, so that the current piece 
+			 * gets able down quickly again
+			 */
+			if (fallingCooldown > 0) {
+				fallingCooldown--;
+			}
 			
 			long delta = (System.nanoTime() - begin) / 1000000L;
 			try {
@@ -237,10 +251,18 @@ public class Natetris extends JFrame {
 			 */
 			board.addPieceToTheBoard(currentPiece, currentCol, currentRow, currentRotation);
 			
+			/*
+			 * Get our score updated by shifting left the default value by the number of cleared lines.
+			 */
 			int clearedLines = board.checkLines(currentPiece);
 			if (clearedLines > 0) {
 				score += 75 << clearedLines;
 			}
+			
+			/*
+			 * Sets the cool down to 50, which means that it will run (50 * FRAME_RATE) times
+			 */
+			fallingCooldown = 50;
 			
 			if (!isGameOver) {
 				spawnNewPiece();
@@ -266,6 +288,8 @@ public class Natetris extends JFrame {
 		this.score = 0;
 		this.nextPiece = Piece.values()[random.nextInt(PIECES_COUNT)];
 		this.board.clear();
+		this.timer.reset();
+		this.fallingCooldown = 0;
 		spawnNewPiece();
 	}
 	
