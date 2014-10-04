@@ -153,14 +153,14 @@ public class Natetris extends JFrame {
 						}
 						break;
 					
-					// rotate left
+					// rotate anticlockwise
 					case KeyEvent.VK_Q:
 						if (!isGamePaused) {
 							rotateCurrentPiece((currentRotation == 0) ? 3 : currentRotation-1);
 						}
 						break;
 						
-					// rotate right
+					// rotate clockwise
 					case KeyEvent.VK_E:
 						if (!isGamePaused) {
 							rotateCurrentPiece((currentRotation == 3) ? 0 : currentRotation+1);
@@ -313,6 +313,12 @@ public class Natetris extends JFrame {
 		}
 	}
 	
+	/**
+	 * Rotates the piece to a new direction (clockwise or anticlockwise). If, with the new direction, 
+	 * the piece overlaps the board, it is moved accordingly to the center of the board so that it doesn't 
+	 * go out of bounds.
+	 * @param newDirection is the direction in which the piece will be rotated
+	 */
 	public void rotateCurrentPiece(int newDirection) {
 		/* 
 		 * newCol is used to rearrange the piece's location 
@@ -320,6 +326,7 @@ public class Natetris extends JFrame {
 		 * so that the piece doesn't clip out of the board
 		 */
 		int newCol = currentCol;
+		int newRow = currentRow;
 		
 		/*
 		 * get the insets of the piece to check if the piece clips out of the board 
@@ -337,9 +344,10 @@ public class Natetris extends JFrame {
 			newCol--;
 		} 
 		
-		if (board.isPossibleToMovePiece(currentPiece,  currentCol, currentRow, currentRotation)) {
+		if (board.isPossibleToMovePiece(currentPiece,  newCol, newRow, newDirection)) {
 			this.currentRotation = newDirection;
 			this.currentCol = newCol;
+			this.currentRow = newRow;
 		}
 	}
 	
