@@ -38,6 +38,11 @@ public class Natetris extends JFrame {
 	private InfoPanel infoPanel;
 	
 	/**
+	 * The welcome screen that appears when you first start the game
+	 */
+	private WelcomeScreen welcomeScreen;
+	
+	/**
 	 * Game control variables.
 	 * isNewGame represents if the game hasn't started yet. Occurs only when the game is launched
 	 */
@@ -120,9 +125,8 @@ public class Natetris extends JFrame {
 				switch (e.getKeyCode()) {
 					// start new game
 					case KeyEvent.VK_ENTER:
-						if (isGameOver || isFirstGame) {
+						if (isGameOver) {
 							resetGame();
-							timer.setPaused(false);
 						}
 						break;
 						
@@ -192,7 +196,7 @@ public class Natetris extends JFrame {
 		add(board, BorderLayout.WEST);
 		add(infoPanel, BorderLayout.EAST);
 		pack();
-		setVisible(true);
+		
 	}
 	
 	/**
@@ -200,10 +204,15 @@ public class Natetris extends JFrame {
 	 * This will refresh the JPanels and handle the game's logic. 
 	 */
 	public void startGame() {
+		/*
+		 * displays our welcome screen
+		 */
+		this.welcomeScreen = new WelcomeScreen(this);
+		
 		this.random = new Random();
 		this.isFirstGame = true;
-		
 		this.timer = new Timer(defaultSpeed);
+		
 		timer.setPaused(true);
 		
 		while (true) {
@@ -213,7 +222,6 @@ public class Natetris extends JFrame {
 			 * on the frame rate control
 			 */
 			long begin = System.nanoTime();
-			
 			timer.update();
 			
 			if (timer.completedOneCycle()) {
@@ -282,7 +290,7 @@ public class Natetris extends JFrame {
 	/**
 	 * Sets all default variables to their initial values
 	 */
-	private void resetGame() {
+	public void resetGame() {
 		this.isFirstGame = false;
 		this.isGameOver = false;
 		this.isGamePaused = false;
@@ -290,6 +298,7 @@ public class Natetris extends JFrame {
 		this.nextPiece = Piece.values()[random.nextInt(PIECES_COUNT)];
 		this.board.clear();
 		this.timer.reset();
+		this.timer.setPaused(false);
 		this.fallingCooldown = 0;
 		spawnNewPiece();
 	}
