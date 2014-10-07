@@ -16,22 +16,15 @@ import javax.swing.JPanel;
  * The first screen that appears when you load the game. It shows only once, 
  * at the initialization.
  * @author natan
- *
  */
 public class WelcomeScreen extends JFrame {
 	
 	private static final long serialVersionUID = 1056563433680760508L;
 	
 	/**
-	 * The JPanel that represents the 
+	 * The JPanel that contains the welcome screen main image
 	 */
-	private welcomePanel welcomeScreen;
-	
-	/**
-	 * Variable that controls the welcome screen. When set to false, the 
-	 * welcome screen should disappear and the game screen should appear instead.
-	 */
-	private boolean isRunning = true;
+	private WelcomePanel welcomePanel;
 	
 	/**
 	 * The game instance
@@ -53,13 +46,12 @@ public class WelcomeScreen extends JFrame {
 		 * Initializes class members
 		 */
 		this.natetris = natetris;
-		this.welcomeScreen = new welcomePanel(welcomeImage);
+		this.welcomePanel = new WelcomePanel(welcomeImage);
 		
 		/*
-		 * Sets the size of the main JPanel to the size of our welcome image,
-		 * then assigns our image to it
+		 * Sets the size of the main JPanel to the size of our welcome image
 		 */
-		welcomeScreen.setPreferredSize(new Dimension(welcomeImage.getWidth(), welcomeImage.getHeight()));
+		welcomePanel.setPreferredSize(new Dimension(welcomeImage.getWidth(), welcomeImage.getHeight()));
 		
 		/*
 		 * adds our keyListener, so that when ENTER is pressed, we see the game board and the 
@@ -77,8 +69,9 @@ public class WelcomeScreen extends JFrame {
 			}
 		});
 		
-		add(welcomeScreen);
+		add(welcomePanel);
 		pack();
+		setLocationRelativeTo(null); // sets our JFrame centered
 		setVisible(true);
 	}
 	
@@ -87,10 +80,13 @@ public class WelcomeScreen extends JFrame {
 	 * @author natan
 	 *
 	 */
-	private class welcomePanel extends JPanel {
+	private class WelcomePanel extends JPanel {
+		/**
+		 * The image that makes up the panel
+		 */
 		BufferedImage welcomeImage = null;
 		
-		public welcomePanel(BufferedImage bufferedImage) {
+		public WelcomePanel(BufferedImage bufferedImage) {
 			this.welcomeImage = bufferedImage;
 		}
 		
