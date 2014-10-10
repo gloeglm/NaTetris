@@ -196,7 +196,7 @@ public class Natetris extends JFrame {
 		add(board, BorderLayout.WEST);
 		add(infoPanel, BorderLayout.EAST);
 		pack();
-		
+		setLocationRelativeTo(null); // places the JFrame at the center of the screen
 	}
 	
 	/**
@@ -227,7 +227,6 @@ public class Natetris extends JFrame {
 			if (timer.completedOneCycle()) {
 				updateGame();
 			}
-			
 			renderGame();
 			
 			/*
@@ -272,6 +271,13 @@ public class Natetris extends JFrame {
 			 * Sets the cool down to x, which means that it will run (x * FRAME_RATE) times
 			 */
 			fallingCooldown = 30;
+			
+			/*
+			 * set the timer to normal speed, so that if the player is still holding 's' the next
+			 * piece will only speed up again when fallingCooldown gets to 0
+			 */
+			timer.reset();
+			timer.setCyclesPerSecond(defaultSpeed);
 			
 			if (!isGameOver) {
 				spawnNewPiece();
