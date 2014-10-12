@@ -86,7 +86,7 @@ public class Natetris extends JFrame {
 	private Timer timer;
 	
 	/**
-	 * Represents the cooldown that happen when a piece hits an obstacle at super-speed, 
+	 * Represents the cool down that happen when a piece hits an obstacle at super-speed, 
 	 * so that the next piece doesn't come down immediately at a high speed
 	 */
 	private int fallingCooldown;
@@ -275,15 +275,31 @@ public class Natetris extends JFrame {
 			fallingCooldown = 30;
 			
 			/*
-			 * set the timer to normal speed, so that if the player is still holding 's' the next
+			 * Increase the default speed a bit so that the game doesn't get tedious, 
+			 * then set the timer to default speed again, so that if the player is still holding 's' the next
 			 * piece will only speed up again when fallingCooldown gets to 0
 			 */
+			increaseGameSpeed();
 			timer.reset();
 			timer.setCyclesPerSecond(defaultSpeed);
 			
 			if (!isGameOver) {
 				spawnNewPiece();
 			}
+		}
+	}
+	
+	/**
+	 * Increases speed taking in consideration the current score. The higher the score, 
+	 * the higher the speed.
+	 */
+	private void increaseGameSpeed() {
+		if (score > 1000 && score < 2000) {
+			defaultSpeed += 0.002f;
+		} else if (score > 2000 && score < 4000) {
+			defaultSpeed += 0.005f;
+		} else {
+			defaultSpeed += 0.01f;
 		}
 	}
 	
