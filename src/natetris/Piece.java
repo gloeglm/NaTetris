@@ -3,7 +3,7 @@ package natetris;
 import java.awt.Color;
 
 /**
- * Describes and details the properties shared among the pieces.
+ * The {@code Piece} enum describes and details the properties shared among the pieces.
  */
 public enum Piece {
 	
@@ -64,6 +64,12 @@ public enum Piece {
 	 */
 	TileL(3, new Color(255, 160, 0), new boolean[][] {
 			{
+				false,	false,	true,
+				true,	true,	true,
+				false,	false,	false
+				
+			},	
+			{
 				false,	true,	false,
 				false,	true,	false,
 				false,	true,	true
@@ -77,12 +83,6 @@ public enum Piece {
 				true,	true,	false,
 				false,	true,	false,
 				false,	true,	false
-			},
-			{
-				false,	false,	true,
-				true,	true,	true,
-				false,	false,	false
-				
 			}
 	}), 
 	
@@ -91,15 +91,10 @@ public enum Piece {
 	 */
 	TileJ(3, new Color(0, 0, 255), new boolean[][] {
 			{
-				false,	true,	false,
-				false,	true,	false,
-				true,	true,	false
-			},
-			{
 				true,	false,	false,
 				true,	true,	true,
 				false,	false,	false
-			},
+			},	
 			{
 				false,	true,	true,
 				false,	true,	false,
@@ -109,6 +104,11 @@ public enum Piece {
 				false,	false,	false,
 				true,	true,	true,
 				false,	false,	true
+			},
+			{
+				false,	true,	false,
+				false,	true,	false,
+				true,	true,	false
 			}
 	}),
 	
@@ -219,8 +219,8 @@ public enum Piece {
 		this.color = color;
 		this.tiles = tiles;
 		this.dimension = dimension;
-		this.spawnCol = 4; // XXX TEMPORARY -- EACH PIECE WILL HAVE A DIFFERENT SPAWN LOCATION IN THE FUTURE
-		this.spawnRow = 0; // XXX TEMPORARY -- EACH PIECE WILL HAVE A DIFFERENT SPAWN LOCATION IN THE FUTURE
+		this.spawnCol = 5; // XXX TEMPORARY -- EACH PIECE WILL HAVE A DIFFERENT SPAWN LOCATION IN THE FUTURE
+		this.spawnRow = 0;
 	}
 	
 	public boolean isTile(int x, int y, int rotation) {
@@ -288,6 +288,16 @@ public enum Piece {
 
 	public Color getColor() {
 		return color;
+	}
+	
+	/**
+	 * @param alpha - the alpha value that the piece will have
+	 * @return a {@code Color} object containing the semi-transparent
+	 * version of this piece's original color
+	 */
+	public Color getGhostColor(float alpha) {
+		float[] RGB = this.color.getRGBColorComponents(null);
+		return new Color(RGB[0], RGB[1], RGB[2], alpha);
 	}
 
 	public void setColor(Color color) {

@@ -7,20 +7,29 @@ import java.awt.Graphics;
 
 import javax.swing.JPanel;
 
+/**
+ * The {@code Board} class is responsible for drawing the board,  and it's pieces, on the screen, 
+ * and controlling the game logic such as testing pieces location and line completeness.
+ * @author natan
+ *
+ */
 public class Board extends JPanel {
 
 	private static final long serialVersionUID = 4858532419981185927L;
+	
+	/**
+	 * Fonts properties
+	 */
+	private static final Font LARGE_FONT = new Font("Tahoma", Font.PLAIN, 16);
+	private static final Font SMALL_FONT = new Font("Tahoma", Font.PLAIN, 11);
 	
 	/**
 	 * The number of visible rows in the board. Two of them need to stay hid
 	 * so that the piece doesn't show up magically 
 	 */
 	public static final int HIDDEN_ROW_COUNT = 2;
-
 	public static final int VISIBLE_ROW_COUNT = 20;
-	
 	public static final int ROW_COUNT = VISIBLE_ROW_COUNT + HIDDEN_ROW_COUNT;
-	
 	public static final int COL_COUNT = 10;
 	
 	/**
@@ -54,12 +63,6 @@ public class Board extends JPanel {
 	public static final int CENTER_Y = BOARD_HEIGHT / 2;
 	
 	/**
-	 * Fonts used 
-	 */
-	private static final Font LARGE_FONT = new Font("Tahoma", Font.PLAIN, 16);
-	private static final Font SMALL_FONT = new Font("Tahoma", Font.PLAIN, 11);
-	 
-	/**
 	 * The group of tiles that compose the entire board
 	 */
 	private Piece[][] tiles;
@@ -88,23 +91,19 @@ public class Board extends JPanel {
 			g.setColor(Color.WHITE);
 			String message = "Game Paused";
 			g.drawString(message, CENTER_X - g.getFontMetrics().stringWidth(message) / 2, CENTER_Y);
-		} else if (natetris.isGameOver() || natetris.isFirstGame()) {
+		} else if (natetris.isGameOver()) {
+			g.setFont(LARGE_FONT);
+			String gameOver = "Game over :(";
+			g.drawString(gameOver, CENTER_X - g.getFontMetrics().stringWidth(gameOver) / 2, CENTER_Y - 30);
+
 			g.setFont(SMALL_FONT);
 			g.setColor(Color.WHITE);
 			String message = "To start a new game, press the ENTER key";
 			g.drawString(message, CENTER_X - g.getFontMetrics().stringWidth(message) / 2, CENTER_Y);
-			
-			if (natetris.isGameOver()) {
-				g.setFont(LARGE_FONT);
-				String gameOver = "Game over :(";
-				g.drawString(gameOver, CENTER_X - g.getFontMetrics().stringWidth(gameOver) / 2, CENTER_Y - 30);
-			}
 		} else {
 			// game is running
-			
-			/**
-			 * draws landed pieces
-			 */
+
+			// draws landed pieces
 			for (int x = 0; x < COL_COUNT; x++) {
 				for (int y = HIDDEN_ROW_COUNT; y < ROW_COUNT; y++) {
 					Piece piece = tiles[x][y];
@@ -113,25 +112,42 @@ public class Board extends JPanel {
 					}
 				}
 			}
-			
-			/**
-			 * draws current piece
-			 */
+			// draws current piece
 			Piece currentPiece = natetris.getCurrentPiece();
 			int currentDirection = natetris.getPieceRotation();
 			int currentRow = natetris.getCurrentRow();
 			int currentCol = natetris.getCurrentCol();
+			
 			for (int col = 0; col < currentPiece.getDimension(); col++) {
 				for (int row = 0; row < currentPiece.getDimension(); row++) {
-					if (currentPiece.isTile(col, row, currentDirection) && (currentRow + row) >= 2) {
+					if (currentPiece.isTile(col, row, currentDirection) && (currentRow + row) >= HIDDEN_ROW_COUNT) {
 						drawTile(currentPiece, currentCol + col, (currentRow + row - HIDDEN_ROW_COUNT), g);
 					}
 				}
 			}
-			
 			/*
-			 * draws the board itself, which is basically made of empty squares.
+			 * draws the semi transparent piece by going down until we find a collision, then
+			 * drawing the ghost piece
 			 */
+			for (int lowestRow = currentRow; lowestRow < ROW_COUNT; lowestRow++) {
+				if (isPossibleToMovePiece(currentPiece, currentCol, lowestRow, currentDirection)) {
+					continue;
+				}
+				
+				// the ghost piece will be drawn one row above a collision
+				lowestRow--;
+				
+				for (int col = 0; col < currentPiece.getDimension(); col++) {
+					for (int row = 0; row < currentPiece.getDimension(); row++) {
+						if (currentPiece.isTile(col, row, currentDirection)) {
+							drawTile(currentPiece, currentCol + col, (lowestRow + row - HIDDEN_ROW_COUNT), g, 0.3f);
+						}
+					}
+				}
+				break;
+			}
+			
+			// draws the board itself, which is basically made of empty squares.
 			g.setColor(Color.DARK_GRAY);
 			for (int x = 1; x < VISIBLE_ROW_COUNT; x++) {
 				g.drawLine(0, (x * TILE_SIZE), BOARD_WIDTH, (x * TILE_SIZE));
@@ -140,14 +156,18 @@ public class Board extends JPanel {
 				g.drawLine((y * TILE_SIZE), 0, (y * TILE_SIZE), BOARD_HEIGHT);
 			}
 		}
-		
-		/*
-		 * draws the board borders
-		 */
+		// draws the board borders
 		g.setColor(Color.WHITE);
 		g.drawRect(0, 0, BOARD_WIDTH, BOARD_HEIGHT);
 	}
 	
+	/**
+	 * Adds a piece that has either hit the ground or another piece to the board
+	 * @param piece to be added to the board
+	 * @param boardCol is the column position of the board where the piece starts
+	 * @param boardRow is the row position of the board where the piece starts
+	 * @param rotation is the current position of the piece
+	 */
 	public void addPieceToTheBoard(Piece piece, int boardCol, int boardRow, int rotation) {
 		for (int pieceCol = 0; pieceCol < piece.getDimension(); pieceCol++) {
 			for (int pieceRow = 0; pieceRow < piece.getDimension(); pieceRow++) {
@@ -158,27 +178,36 @@ public class Board extends JPanel {
 		}
 	}
 	
+	/**
+	 * Logically adds the piece to the board
+	 * @param piece - the piece to be added to the board
+	 * @param col - the piece's column
+	 * @param row - the piece's row
+	 */
 	private void addPiece(Piece piece, int col, int row) {
 		tiles[col][row] = piece;
 	}
-
+	
+	/**
+	 * Checks if it's possible to move the piece to a new position of the board.<br>
+	 * Invalid positions are anywhere outside the board or anywhere inside the board where 
+	 * there is another piece already
+	 * @param piece - the piece to be checked
+	 * @param col - the piece's column
+	 * @param row - the piece's row
+	 * @param pieceRotation - the piece's current rotation
+	 * @return true if possible to move, false otherwise
+	 */
 	public boolean isPossibleToMovePiece(Piece piece, int col, int row, int pieceRotation) {
-		/*
-		 *  check if it is a valid column
-		 */
+		// check if it is a valid column
 		if (col < (-piece.getLeftmostTile(pieceRotation)) || (col + piece.getRightmostTile(pieceRotation)) >= COL_COUNT) {
 			return false;
 		}
-		/*
-		 *  check if it is a valid row
-		 */
+		// check if it is a valid row
 		if ((row + piece.getLowermostTile(pieceRotation)) >= ROW_COUNT) {
 			return false;
 		}
-		
-		/*
-		 * Checks if two pieces collided
-		 */
+		// Checks if two pieces collided
 		for (int pieceCol = 0; pieceCol < piece.getDimension(); pieceCol++) {
 			for (int pieceRow = 0; pieceRow < piece.getDimension(); pieceRow++) {
 				if (piece.isTile(pieceCol, pieceRow, pieceRotation) && tiles[col + pieceCol][row + pieceRow] != null) {
@@ -186,7 +215,6 @@ public class Board extends JPanel {
 				}
 			}
 		}
-		
 		return true;
 	}
 	
@@ -228,14 +256,12 @@ public class Board extends JPanel {
 				return false;
 			}
 		}
-		
-		/* lines is filled up, so we move down all the lines above it */
+		// lines is filled up, so we move down all the lines above it
 		for (int unfilledRow = row; unfilledRow > 0; unfilledRow--) {
 			for (int col = 0; col < COL_COUNT; col++) {
 				tiles[col][unfilledRow] = tiles[col][unfilledRow-1];
 			}
 		}
-		
 		return true;
 	}
 	
@@ -249,8 +275,29 @@ public class Board extends JPanel {
 		return (tiles[x][y] != null);
 	}
 	
+	/**
+	 * Draws each tile that makes up {@code piece}
+	 * @param piece - the piece from which the tile is part of
+	 * @param x - the row that the tile is going to be drawn
+	 * @param y - the column that the tile is going to be drawn
+	 * @param g - graphics variable
+	 */
 	private void drawTile(Piece piece, int x, int y, Graphics g) {
 		g.setColor(piece.getColor());
 		g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+	}
+	
+	/**
+	 * Draws each tile that makes up {@code piece}
+	 * @param piece - the piece from which the tile is part of
+	 * @param x - the row that the tile is going to be drawn
+	 * @param y - the column that the tile is going to be drawn
+	 * @param g - graphics variable
+	 * @param alpha - the alpha value of the pieces color 
+	 */
+	private void drawTile(Piece piece, int x, int y, Graphics g, float alpha) {
+		g.setColor(piece.getGhostColor(alpha));
+		g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+		
 	}
 }
