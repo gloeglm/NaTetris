@@ -184,7 +184,9 @@ public class Natetris extends JFrame {
 			
 			@Override
 			public void keyReleased(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_S) {
+				if (e.getKeyCode() == KeyEvent.VK_S ||
+					e.getKeyCode() == KeyEvent.VK_DOWN ||
+					e.getKeyCode() == KeyEvent.VK_NUMPAD2) {
 					timer.setCyclesPerSecond(defaultSpeed);
 					timer.reset();
 				}
@@ -304,7 +306,6 @@ public class Natetris extends JFrame {
 		this.nextPiece = Piece.values()[random.nextInt(PIECES_COUNT)];
 		this.board.clear();
 		this.timer.reset();
-		this.timer.setPaused(false);
 		this.fallingCooldown = 0;
 		spawnNewPiece();
 	}
