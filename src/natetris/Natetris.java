@@ -242,9 +242,19 @@ public class Natetris extends JFrame {
 			long delta = (System.nanoTime() - begin) / 1000000L;
 			try {
 				Thread.sleep(FRAME_RATE - delta);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			} 
+			} catch (InterruptedException ie) {
+				ie.printStackTrace();
+			} catch (IllegalArgumentException iae) {
+				/* delta was way too big and caused the thread to receive a negative value as 
+				 * sleep() argument. This happens occasionally (although it shouldn't...), 
+				 * so I decided to set a default of FRAME_RATE time in case it happens
+				 */
+				try {
+					Thread.sleep(FRAME_RATE);	
+				} catch (InterruptedException ie) {
+					ie.printStackTrace();
+				}
+			}
 		}
 		
 	}
