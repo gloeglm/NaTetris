@@ -271,7 +271,7 @@ public enum Piece {
 		for (int y = dimension - 1; y >= 0; y--) {
 			for (int x = dimension - 1; x >= 0; x--) {
 				if (isTile(x, y, rotation)) {
-					return y;
+					return y; // returns the current row
 				}
 			}
 		}
@@ -291,7 +291,7 @@ public enum Piece {
 	}
 	
 	/**
-	 * @param alpha - the alpha value that the piece will have
+	 * @param alpha - the piece's alpha value 
 	 * @return a {@code Color} object containing the semi-transparent
 	 * version of this piece's original color
 	 */

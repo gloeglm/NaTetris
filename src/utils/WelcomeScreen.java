@@ -1,4 +1,4 @@
-package natetris;
+package utils;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -11,6 +11,8 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+
+import natetris.Natetris;
 
 /**
  * The first screen that appears when you load the game. It shows only once, 
@@ -62,17 +64,16 @@ public class WelcomeScreen extends JFrame {
 			public void keyPressed(KeyEvent e) {
 				switch(e.getKeyCode()) {
 					case KeyEvent.VK_ENTER:
+						setVisible(false);
 						natetris.setVisible(true);
 						natetris.resetGame();
-						setVisible(false);
 				}
 			}
 		});
 		
 		add(welcomePanel);
 		pack();
-		setLocationRelativeTo(null); // sets our JFrame centered
-		setVisible(true);
+		setLocationRelativeTo(null); // places the JFrame at the center of the screen
 	}
 	
 	/**
@@ -81,6 +82,7 @@ public class WelcomeScreen extends JFrame {
 	 *
 	 */
 	private class WelcomePanel extends JPanel {
+		private static final long serialVersionUID = 6175097847507912852L;
 		/**
 		 * The image that makes up the panel
 		 */

@@ -7,6 +7,8 @@ import java.util.Random;
 
 import javax.swing.JFrame;
 
+import utils.WelcomeScreen;
+
 /**
  * The {@code Natetris} class is responsible for the flow control of the game, setting up key listeners and
  * time control.
@@ -36,11 +38,6 @@ public class Natetris extends JFrame {
 	 *	The information panel, containing general info for the player
 	 */
 	private InfoPanel infoPanel;
-	
-	/**
-	 * The welcome screen that appears when you first start the game
-	 */
-	private WelcomeScreen welcomeScreen;
 	
 	/**
 	 * Game control variables.
@@ -195,6 +192,7 @@ public class Natetris extends JFrame {
 		
 		this.board = new Board(this);
 		this.infoPanel = new InfoPanel(this);
+		
 		add(board, BorderLayout.WEST);
 		add(infoPanel, BorderLayout.EAST);
 		pack();
@@ -206,11 +204,6 @@ public class Natetris extends JFrame {
 	 * This will refresh the JPanels and handle the game's logic. 
 	 */
 	public void startGame() {
-		/*
-		 * displays our welcome screen
-		 */
-		this.welcomeScreen = new WelcomeScreen(this);
-		
 		this.random = new Random();
 		this.isFirstGame = true;
 		this.timer = new Timer(defaultSpeed);
@@ -229,6 +222,7 @@ public class Natetris extends JFrame {
 			if (timer.completedOneCycle()) {
 				updateGame();
 			}
+			
 			renderGame();
 			
 			/*
@@ -256,7 +250,6 @@ public class Natetris extends JFrame {
 				}
 			}
 		}
-		
 	}
 	
 	/**
@@ -439,7 +432,19 @@ public class Natetris extends JFrame {
 	}
 	
 	public static void main(String[] args) {
+		/*
+		 * instantiates the game, which will be started as soon as 
+		 * the welcome screen is gone
+		 */
 		Natetris natetris = new Natetris();
+		/*
+		 * instantiates and displays the welcome screen
+		 */
+		WelcomeScreen welcomeScreen = new WelcomeScreen(natetris);
+		welcomeScreen.setVisible(true);
+		/*
+		 * 
+		 */
 		natetris.startGame();
 	}
 }
