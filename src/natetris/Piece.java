@@ -215,6 +215,11 @@ public enum Piece {
 	 */
 	private int spawnRow;
 	
+	/**
+	 * The biggest size that a piece may have, which is piece 'I' (4 squares)
+	 */
+	public static final int MAX_PIECE_DIMENSION = 4;
+	
 	private Piece (int dimension, Color color, boolean [][] tiles) {
 		this.color = color;
 		this.tiles = tiles;

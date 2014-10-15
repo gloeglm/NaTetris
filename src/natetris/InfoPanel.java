@@ -23,9 +23,9 @@ public class InfoPanel extends JPanel {
   private static final Color FONT_COLOR = Color.GRAY;
   
   /**
-   * The biggest size that a piece may have (piece I)
+   * The biggest size that a piece may have
    */
-  private static final int MAX_PIECE_DIMENSION = 4;
+  private static final int MAX_PIECE_DIMENSION = Piece.MAX_PIECE_DIMENSION;
   
   /**
    * Constants used throughout the panel for layout

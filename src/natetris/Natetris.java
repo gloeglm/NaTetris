@@ -7,6 +7,7 @@ import java.util.Random;
 
 import javax.swing.JFrame;
 
+import sound.Jukebox;
 import utils.WelcomeScreen;
 
 /**
@@ -102,6 +103,11 @@ public class Natetris extends JFrame {
 	private Random random;
 	
 	/**
+	 * The game's sound system handler
+	 */
+	private Jukebox jukebox;
+	
+	/**
 	 * Creates a new instance of the game. 
 	 * This sets the properties of the JFrame that will hold the game section and
 	 * adds a key listener to it.
@@ -192,6 +198,7 @@ public class Natetris extends JFrame {
 		
 		this.board = new Board(this);
 		this.infoPanel = new InfoPanel(this);
+		this.jukebox = new Jukebox();
 		
 		add(board, BorderLayout.WEST);
 		add(infoPanel, BorderLayout.EAST);
@@ -433,17 +440,18 @@ public class Natetris extends JFrame {
 	
 	public static void main(String[] args) {
 		/*
-		 * instantiates the game, which will be started as soon as 
-		 * the welcome screen is gone
+		 * instantiates the game 
 		 */
 		Natetris natetris = new Natetris();
+		
 		/*
 		 * instantiates and displays the welcome screen
 		 */
 		WelcomeScreen welcomeScreen = new WelcomeScreen(natetris);
 		welcomeScreen.setVisible(true);
+		
 		/*
-		 * 
+		 * starts the game; the board will be only be shown after the welcome screen is gone
 		 */
 		natetris.startGame();
 	}

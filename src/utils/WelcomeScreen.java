@@ -1,5 +1,6 @@
 package utils;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.KeyAdapter;
@@ -34,6 +35,13 @@ public class WelcomeScreen extends JFrame {
 	Natetris natetris;
 	
 	public WelcomeScreen(final Natetris natetris) {
+		/*
+		 * basic window properties
+		 */
+		setLayout(new BorderLayout());
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setResizable(false);
+		
 		/*
 		 * Tries to load WelcomeScreen's images
 		 */
