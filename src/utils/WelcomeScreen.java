@@ -1,7 +1,9 @@
 package utils;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -104,6 +106,8 @@ public class WelcomeScreen extends JFrame {
 		protected void paintComponent(Graphics g) {
 			super.paintComponent(g);
 			g.drawImage(welcomeImage, 0, 0, null);
+			g.setColor(Color.WHITE);
+			g.drawString("Press ENTER, sweetie", welcomeImage.getWidth() - 200, welcomeImage.getHeight() - 50);
 		}
 	}
 }
