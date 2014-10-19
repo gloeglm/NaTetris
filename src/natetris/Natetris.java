@@ -57,7 +57,7 @@ public class Natetris extends JFrame {
 	 * The current piece that is falling down
 	 */
 	private Piece currentPiece;
-
+	
 	/**
 	 * The next piece that will be on the game 
 	 */
@@ -272,11 +272,24 @@ public class Natetris extends JFrame {
 			board.addPieceToTheBoard(currentPiece, currentCol, currentRow, currentRotation);
 			
 			/*
-			 * Get our score updated by shifting left the default value by the number of cleared lines.
+			 * Get the number of lines that were cleared out of the board, if any 
 			 */
 			int clearedLines = board.checkLines(currentPiece);
 			if (clearedLines > 0) {
+				/*
+				 * Get our score updated by shifting left the default value by the number of cleared lines
+				 */
 				score += 75 << clearedLines;
+				
+				/*
+				 * Plays a beautiful audio clip to keep our player motivated :-)
+				 */
+				try {
+					jukebox.play(clearedLines);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
 			}
 			
 			/*

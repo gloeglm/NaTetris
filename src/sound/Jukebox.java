@@ -1,14 +1,28 @@
 package sound;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
+
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 import natetris.Piece;
 
 /**
  * The Jukebox class is responsible for handling the game's audio files,
  * such as loading and playing them.
+ * 
+ * The class is designed so that, if an error occurs while loading the audio files, 
+ * the game will still be able to run if checking for exceptions when using {@code Jukebox} or 
+ * using the method {@code isGood()}
  * @author natan
  *
  */
@@ -25,6 +39,11 @@ public class Jukebox {
 	private final File currFolder = new File(currPath);
 	
 	/**
+	 * Random number generator to randomize audio selection
+	 */
+	private Random rand;
+	
+	/**
 	 * {@code audioFiles} contains all the audio files available in '/sound' folder.<br>
 	 * 
 	 * Depending on the number of rows cleared, there are a number of different 
@@ -38,22 +57,47 @@ public class Jukebox {
 	
 	public Jukebox() {
 		try {
+			this.rand = new Random();
 			/*
-			 * loads the audio files and assign them to our local "library" 
+			 * loads the audio files and assign them to our local library
 			 */
-			loadAudioFiles();
-			
+			loadAudioLibrary();
 			
 		} catch (Exception e) {
-			System.err.println("Audio files unavailable");
+			System.err.println("Files were messed up for some reason. Aborting Jukebox class construction.");
 			e.printStackTrace();
 		}
 	}
 	
 	/**
+	 * Plays an audio associated with the number of cleared rows
+	 * @param clearedRows
+	 * @throws IOException 
+	 * @throws UnsupportedAudioFileException 
+	 * @throws LineUnavailableException 
+	 */
+	public void play(int clearedLines) throws Exception {
+		int audiosAvailable = audioLibrary.get(clearedLines).size();
+		int audioIndex = rand.nextInt(audiosAvailable);
+		
+		/*
+		 * Gets a random audio available from clearedLines level and plays it.
+		 * This code is overly complex for the function that it does because I get
+		 * a IllegalArgumentException when I try to open the clip. I guess there is something
+		 * wrong with the *.wav files. I plan on fixing this code if I get the chance.
+		 */
+		AudioInputStream ais = AudioSystem.getAudioInputStream(audioLibrary.get(clearedLines).get(audioIndex));
+        AudioFormat format = ais.getFormat();
+        DataLine.Info info = new DataLine.Info(Clip.class, format);
+        Clip clip = (Clip) AudioSystem.getLine(info);
+        clip.open(ais);
+        clip.start();
+	}
+	
+	/**
 	 * loads all audio files and fills the {@code audioFiles} variable with them
 	 */
-	private void loadAudioFiles() {
+	private void loadAudioLibrary() {
 		/*
 		 * get all files from the current directory
 		 */
@@ -74,15 +118,19 @@ public class Jukebox {
 		for (File file: totalAudioFiles) {
 			switch (file.getName().charAt(0)) {
 				case '1':
+					// one row completed audio
 					audioLibrary.get(1).add(file);
 					break;
 				case '2':
+					// two rows completed audio
 					audioLibrary.get(2).add(file);
 					break;
 				case '3':
+					// three rows completed audio
 					audioLibrary.get(3).add(file);
 					break;
 				case '4':
+					// four rows completed audio
 					audioLibrary.get(4).add(file);
 					break;
 			}
