@@ -224,7 +224,7 @@ public enum Piece {
 		this.color = color;
 		this.tiles = tiles;
 		this.dimension = dimension;
-		this.spawnCol = 5; // XXX TEMPORARY -- EACH PIECE WILL HAVE A DIFFERENT SPAWN LOCATION IN THE FUTURE
+		this.spawnCol = 5;
 		this.spawnRow = 0;
 	}
 	

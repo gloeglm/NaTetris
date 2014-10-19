@@ -20,9 +20,6 @@ import natetris.Piece;
  * The Jukebox class is responsible for handling the game's audio files,
  * such as loading and playing them.
  * 
- * The class is designed so that, if an error occurs while loading the audio files, 
- * the game will still be able to run if checking for exceptions when using {@code Jukebox} or 
- * using the method {@code isGood()}
  * @author natan
  *
  */
@@ -56,15 +53,13 @@ public class Jukebox {
 	
 	
 	public Jukebox() {
+		this.rand = new Random();
 		try {
-			this.rand = new Random();
 			/*
 			 * loads the audio files and assign them to our local library
 			 */
 			loadAudioLibrary();
-			
 		} catch (Exception e) {
-			System.err.println("Files were messed up for some reason. Aborting Jukebox class construction.");
 			e.printStackTrace();
 		}
 	}
@@ -83,15 +78,16 @@ public class Jukebox {
 		/*
 		 * Gets a random audio available from clearedLines level and plays it.
 		 * This code is overly complex for the function that it does because I get
-		 * a IllegalArgumentException when I try to open the clip. I guess there is something
-		 * wrong with the *.wav files. I plan on fixing this code if I get the chance.
+		 * a IllegalArgumentException when I try to open the clip without an explicit cast. 
+		 * I guess there is something wrong with the *.wav files. 
+		 * I plan on fixing this code if I get the chance.
 		 */
 		AudioInputStream ais = AudioSystem.getAudioInputStream(audioLibrary.get(clearedLines).get(audioIndex));
-        AudioFormat format = ais.getFormat();
-        DataLine.Info info = new DataLine.Info(Clip.class, format);
-        Clip clip = (Clip) AudioSystem.getLine(info);
-        clip.open(ais);
-        clip.start();
+		AudioFormat format = ais.getFormat();
+		DataLine.Info info = new DataLine.Info(Clip.class, format);
+		Clip clip = (Clip) AudioSystem.getLine(info);
+		clip.open(ais);
+		clip.start();
 	}
 	
 	/**
