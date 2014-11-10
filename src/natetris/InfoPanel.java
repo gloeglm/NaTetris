@@ -89,10 +89,10 @@ public class InfoPanel extends JPanel {
     offset += SPACE_BETWEEN_STRINGS;
     
     g.setFont(SMALL_FONT);
-    String movePointersTip = "Move pieces using the pointers keys, OR:";
-    String moveLeftTip = "  move left by pressing 'A'";
-    String moveRightTip = " move right by pressing 'D'";
-    String moveDownTip = "  move down by pressing 'S'";
+    String movePointersTip = "\tMove pieces using the pointers keys, OR:";
+    String moveLeftTip = "\tmove left by pressing 'A'";
+    String moveRightTip = "\tmove right by pressing 'D'";
+    String moveDownTip = "\tmove down by pressing 'S'";
     g.drawString(movePointersTip, 0, offset += SPACE_BETWEEN_STRINGS);
     g.drawString(moveLeftTip, 0, offset += SPACE_BETWEEN_STRINGS);
     g.drawString(moveRightTip, 0, offset += SPACE_BETWEEN_STRINGS);
