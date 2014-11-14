@@ -56,7 +56,7 @@ public class Jukebox {
 		this.rand = new Random();
 		try {
 			/*
-			 * loads the audio files and assign them to our local library
+			 * Loads the audio files and assign them to our local library
 			 */
 			loadAudioLibrary();
 		} catch (Exception e) {
@@ -78,7 +78,7 @@ public class Jukebox {
 		/*
 		 * Gets a random audio available from clearedLines level and plays it.
 		 * This code is overly complex for the function that it does because I get
-		 * a IllegalArgumentException when I try to open the clip without an explicit cast. 
+		 * an IllegalArgumentException when I try to open the clip without an explicit cast. 
 		 * I guess there is something wrong with the *.wav files. 
 		 * I plan on fixing this code if I get the chance.
 		 */
@@ -91,11 +91,11 @@ public class Jukebox {
 	}
 	
 	/**
-	 * loads all audio files and fills the {@code audioFiles} variable with them
+	 * Loads all audio files and fills the {@code audioFiles} variable with them
 	 */
 	private void loadAudioLibrary() {
 		/*
-		 * get all files from the current directory
+		 * Get all files from the current directory
 		 */
 		File []totalAudioFiles = currFolder.listFiles();
 		
@@ -107,26 +107,26 @@ public class Jukebox {
 		}
 		
 		/*
-		 *  fills our audio library with the audio files.
+		 *  Fills our audio library with the audio files.
 		 *  This has a really strong coupling with the name of the files, 
 		 *  but I couln't think of anything better at the time.
 		 */
 		for (File file: totalAudioFiles) {
 			switch (file.getName().charAt(0)) {
 				case '1':
-					// one row completed audio
+					// One row completed audio
 					audioLibrary.get(1).add(file);
 					break;
 				case '2':
-					// two rows completed audio
+					// Two rows completed audio
 					audioLibrary.get(2).add(file);
 					break;
 				case '3':
-					// three rows completed audio
+					// Three rows completed audio
 					audioLibrary.get(3).add(file);
 					break;
 				case '4':
-					// four rows completed audio
+					// Four rows completed audio
 					audioLibrary.get(4).add(file);
 					break;
 			}
