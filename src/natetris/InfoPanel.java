@@ -185,7 +185,7 @@ public class InfoPanel extends JPanel {
 	  g.fillRect(x, y, TILE_SIZE, TILE_SIZE);
   }
   
-  public void playerJustScored(boolean value) {
+  public void setPlayerJustScored(boolean value) {
 	  this.lastScoreTime = System.currentTimeMillis();
 	  this.hasJustScored = value;
   }

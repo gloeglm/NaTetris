@@ -287,7 +287,7 @@ public class Natetris extends JFrame {
 				 */
 				try {
 					jukebox.play(clearedLines);
-					infoPanel.playerJustScored(true);
+					infoPanel.setPlayerJustScored(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
