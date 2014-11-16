@@ -81,9 +81,9 @@ public class Board extends JPanel {
 		super.paintComponent(g);
 
 		/*
-		 * this enhances drawing methods readability, by considering the 
-		 * 0,0 axis the beginning of the border limit of the board
-		 */
+	     * Enhances drawing methods readability, by considering the 
+	     * 0,0 axis as the beginning of the border limit of the board
+	     */
 		g.translate(BORDER_WIDTH, BORDER_WIDTH);
 		
 		if (natetris.isGamePaused()) {

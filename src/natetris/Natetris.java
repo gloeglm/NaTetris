@@ -81,7 +81,7 @@ public class Natetris extends JFrame {
 	/**
 	 * The timer of the game, which controls the timer between game cycles
 	 */
-	private Timer timer;
+	private NatetrisTimer timer;
 	
 	/**
 	 * Represents the cool down that happen when a piece hits an obstacle at super-speed, 
@@ -213,7 +213,7 @@ public class Natetris extends JFrame {
 	public void startGame() {
 		this.random = new Random();
 		this.isFirstGame = true;
-		this.timer = new Timer(defaultSpeed);
+		this.timer = new NatetrisTimer(defaultSpeed);
 		
 		timer.setPaused(true);
 		
@@ -243,18 +243,18 @@ public class Natetris extends JFrame {
 			long delta = (System.nanoTime() - begin) / 1000000L;
 			try {
 				Thread.sleep(FRAME_RATE - delta);
-			} catch (InterruptedException ie) {
-				ie.printStackTrace();
 			} catch (IllegalArgumentException iae) {
 				/* delta was way too big and caused the thread to receive a negative value as 
-				 * sleep() argument. This happens occasionally (although it shouldn't...), 
-				 * so I decided to set a default of FRAME_RATE time in case it happens
+				 * sleep() argument. This happens occasionally (although it shouldn't), 
+				 * so it was decided to set a default of FRAME_RATE time in case it happens
 				 */
 				try {
 					Thread.sleep(FRAME_RATE);	
 				} catch (InterruptedException ie) {
 					ie.printStackTrace();
 				}
+			} catch (InterruptedException ie) {
+				ie.printStackTrace();
 			}
 		}
 	}
@@ -282,10 +282,12 @@ public class Natetris extends JFrame {
 				score += 75 << clearedLines;
 				
 				/*
-				 * Plays a beautiful audio clip to keep our player motivated :-)
+				 * Plays a beautiful audio clip and displays a lovely picture 
+				 * to keep our player motivated :-)
 				 */
 				try {
 					jukebox.play(clearedLines);
+					infoPanel.playerJustScored(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

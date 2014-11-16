@@ -1,6 +1,6 @@
 package natetris;
 
-public class Timer {
+public class NatetrisTimer {
 	/**
 	 * Represents the time (in milliseconds) that takes for a cycle to be complete
 	 */
@@ -26,7 +26,7 @@ public class Timer {
 	 */
 	private float timeToNextCycle;
 	
-	Timer(float cyclesPerSecond) {
+	NatetrisTimer(float cyclesPerSecond) {
 		setCyclesPerSecond(cyclesPerSecond);
 		reset();
 	}
