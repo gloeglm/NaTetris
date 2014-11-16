@@ -28,12 +28,12 @@ public class Jukebox {
 	/**
 	 * The complete absolute path from where the application has initialized
 	 */
-	private static final String currPath = System.getProperty("user.dir") + "/sound";
+	private static final String CURR_PATH = System.getProperty("user.dir") + "/sound";
 	
 	/**
 	 * The current folder that we are in
 	 */
-	private final File currFolder = new File(currPath);
+	private final File currFolder = new File(CURR_PATH);
 	
 	/**
 	 * Random number generator to randomize audio selection

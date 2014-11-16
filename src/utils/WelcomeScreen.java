@@ -3,7 +3,6 @@ package utils;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -38,7 +37,7 @@ public class WelcomeScreen extends JFrame {
 	
 	public WelcomeScreen(final Natetris natetris) {
 		/*
-		 * basic window properties
+		 * Basic window properties
 		 */
 		setLayout(new BorderLayout());
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -66,7 +65,7 @@ public class WelcomeScreen extends JFrame {
 		welcomePanel.setPreferredSize(new Dimension(welcomeImage.getWidth(), welcomeImage.getHeight()));
 		
 		/*
-		 * adds our keyListener, so that when ENTER is pressed, we see the game board and the 
+		 * Adds our keyListener, so that when ENTER is pressed, we see the game board and the 
 		 * welcome window disappears
 		 */
 		addKeyListener(new KeyAdapter() {

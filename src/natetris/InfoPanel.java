@@ -2,9 +2,13 @@ package natetris;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 /**
@@ -14,6 +18,11 @@ import javax.swing.JPanel;
 public class InfoPanel extends JPanel {
 
   private static final long serialVersionUID = -3849098449596016270L;
+  
+  /**
+   * The complete absolute path from where the application has initialized
+   */
+  private static final String CURR_PATH = System.getProperty("user.dir") + "/img";
   
   /**
    * Fonts properties
@@ -32,8 +41,24 @@ public class InfoPanel extends JPanel {
    */
   private static final int TILE_SIZE = Board.TILE_SIZE;
   private static final int SPACE_BETWEEN_STRINGS = 25;
-  private static final int PADDING = 5;
+  private static final int PADDING_BOX = 5;
   private static final int BORDER_WIDTH = Board.BORDER_WIDTH;
+
+  /**
+   * Represents if the player has just scored. 
+   * This is used to manipulate the visibility of a picture for a determined length of time.
+   */
+  private boolean hasJustScored = false;
+  
+  /**
+   * Natan's face that will pop up when player scores
+   */
+  private JLabel natanImage = null;
+  
+  /**
+   * Gets the current time in milliseconds to manipulate natanImage's appearance
+   */
+  private long lastScoreTime = 0L;
   
   /**
    * The game instance
@@ -43,6 +68,19 @@ public class InfoPanel extends JPanel {
   public InfoPanel(Natetris natetris) {
     this.natetris = natetris;
     
+    /*
+	 * Tries to load the image that will be shown when player scores
+	 */
+	Icon animatedGif = new ImageIcon(CURR_PATH + "/deal_with.gif");
+	this.natanImage = new JLabel(animatedGif);
+	
+	/*
+	 * The image will be displayed only when player hits a score, so it starts out as hidden
+	 */
+	natanImage.setVisible(false);	
+	this.add(natanImage);
+	
+	setLayout(new FlowLayout(FlowLayout.LEFT));
     setPreferredSize(new Dimension(Board.PANEL_WIDTH, Board.PANEL_HEIGHT));
     setBackground(Color.BLACK);
   }
@@ -53,9 +91,10 @@ public class InfoPanel extends JPanel {
     g.setColor(Color.WHITE);
     g.setFont(LARGE_FONT);
     int offset = SPACE_BETWEEN_STRINGS;
+    
     /*
-     * this enhances drawing methods readability, by considering the 
-     * 0,0 axis the beginning of the border limit of the board
+     * Enhances drawing methods readability, by considering the 
+     * 0,0 axis as the beginning of the border limit of the board
      */
     g.translate(BORDER_WIDTH, BORDER_WIDTH);
     
@@ -64,25 +103,18 @@ public class InfoPanel extends JPanel {
      * the piece itself 
      */
     g.drawRect(0, 0, predictionBoxWidth(), predictionBoxWidth());
+    
     if (natetris.isGameRunning()) {
-      Piece piece = natetris.getNextPiece();
-      
-      int dim = piece.getDimension();
-      
-      for (int x = 0; x < dim; x++) {
-        for (int y = 0; y < dim; y++) {
-          if (piece.isTile(x, y, 0)) {
-        	  int currX = PADDING + (x * TILE_SIZE);
-        	  int currY = PADDING + (y * TILE_SIZE);
-	          drawTile(piece, currX, currY, g);
-          }
-        }
-      }
+    	if (hasJustScored) {
+    		drawsSuccessImage(g);
+    	} else {
+    		drawsNextPiece(g);
+    	}
     }
     
-    g.setColor(FONT_COLOR);
     offset += predictionBoxWidth(); // strings have to be underneath the prediction square to be visible
     
+    g.setColor(FONT_COLOR);
     String points = "Points: ";
     g.drawString(points, 0, offset);
     g.drawString(Long.toString(natetris.getScore()), g.getFontMetrics().stringWidth(points), offset);
@@ -100,13 +132,62 @@ public class InfoPanel extends JPanel {
 
   }
   
-  private int predictionBoxWidth() {
-    return Board.TILE_SIZE * MAX_PIECE_DIMENSION + PADDING;
+  /**
+   * Draws the next piece that will come in the game
+   * @param Graphics g
+   */
+  private void drawsNextPiece(Graphics g) { 
+	  Piece piece = natetris.getNextPiece();
+	      
+	  int dim = piece.getDimension();
+	  
+	  for (int x = 0; x < dim; x++) {
+	    for (int y = 0; y < dim; y++) {
+	      if (piece.isTile(x, y, 0)) {
+	    	  int currX = PADDING_BOX + (x * TILE_SIZE);
+	    	  int currY = PADDING_BOX + (y * TILE_SIZE);
+	          drawTile(piece, currX, currY, g);
+	      }
+	    }
+	  }
   }
   
+  /**
+   * Draws the image the will be shown when the player has just scored
+   * @param Graphics g
+   */
+  private void drawsSuccessImage(Graphics g) {
+	  long gifDuration = 5000L;
+	  if (gifDuration > (System.currentTimeMillis() - this.lastScoreTime)) {
+		  natanImage.setVisible(true);
+	  } else {
+		  natanImage.setVisible(false);
+		  hasJustScored = false;
+	  }
+  }
+  
+  /**
+   * @return the prediction box's width
+   */
+  private int predictionBoxWidth() {
+	  return Board.TILE_SIZE * MAX_PIECE_DIMENSION + PADDING_BOX;
+  }
+  
+  /**
+   * Draws the next piece that will fall
+   * @param piece
+   * @param x
+   * @param y
+   * @param g
+   */
   private void drawTile(Piece piece, int x, int y, Graphics g) {
-    g.setColor(piece.getColor());
-    g.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+	  g.setColor(piece.getColor());
+	  g.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+  }
+  
+  public void playerJustScored(boolean value) {
+	  this.lastScoreTime = System.currentTimeMillis();
+	  this.hasJustScored = value;
   }
   
 }
