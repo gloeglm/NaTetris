@@ -291,7 +291,6 @@ public class Natetris extends JFrame {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				
 			}
 			
 			/*
