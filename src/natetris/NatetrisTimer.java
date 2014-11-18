@@ -1,5 +1,10 @@
 package natetris;
 
+/**
+ * NatetrisTimer is a special timer used to calculate each step in the game, which is constant 
+ * unless the player chooses to speed it up, by measuring how many milliseconds passed through each 
+ * game frame. When it completes one cycle, the game board is updated.
+ */
 public class NatetrisTimer {
 	/**
 	 * Represents the time (in milliseconds) that takes for a cycle to be complete
