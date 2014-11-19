@@ -7,7 +7,7 @@ import java.util.Random;
 
 import javax.swing.JFrame;
 
-import sound.Jukebox;
+import utils.sound.Jukebox;
 import utils.NatetrisTimer;
 import utils.WelcomeScreen;
 

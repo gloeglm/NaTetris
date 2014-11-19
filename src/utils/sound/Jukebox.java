@@ -1,7 +1,6 @@
-package sound;
+package utils.sound;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -11,8 +10,6 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.DataLine;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
 
 import natetris.Piece;
 
@@ -67,9 +64,7 @@ public class Jukebox {
 	/**
 	 * Plays an audio associated with the number of cleared rows
 	 * @param clearedRows
-	 * @throws IOException 
-	 * @throws UnsupportedAudioFileException 
-	 * @throws LineUnavailableException 
+	 * @throws Exception 
 	 */
 	public void play(int clearedLines) throws Exception {
 		int audiosAvailable = audioLibrary.get(clearedLines).size();
