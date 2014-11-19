@@ -31,7 +31,7 @@ public class NatetrisTimer {
 	 */
 	private float timeToNextCycle;
 	
-	NatetrisTimer(float cyclesPerSecond) {
+	public NatetrisTimer(float cyclesPerSecond) {
 		setCyclesPerSecond(cyclesPerSecond);
 		reset();
 	}
