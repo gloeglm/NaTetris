@@ -8,6 +8,7 @@ import java.util.Random;
 import javax.swing.JFrame;
 
 import sound.Jukebox;
+import utils.NatetrisTimer;
 import utils.WelcomeScreen;
 
 /**
@@ -29,6 +30,7 @@ public class Natetris extends JFrame {
 	 * The quantity of different kinds of pieces
 	 */
 	public static final int PIECES_COUNT = Piece.values().length;
+	
 	
 	/**
 	 * The game board

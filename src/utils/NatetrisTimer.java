@@ -1,4 +1,4 @@
-package natetris;
+package utils;
 
 /**
  * NatetrisTimer is a special timer used to calculate each step in the game, which is constant 
