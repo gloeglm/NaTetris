@@ -1,15 +1,11 @@
 package utils.sound;
 
-import java.io.File;
+import java.applet.Applet;
+import java.applet.AudioClip;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
-
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.DataLine;
 
 import natetris.Piece;
 
@@ -23,14 +19,17 @@ import natetris.Piece;
 public class Jukebox {
 	
 	/**
-	 * The complete absolute path from where the application has initialized
+	 * The name of the sound files. They were loaded dynamically before adding
+	 * .jar support to the game, but for now they'll be loaded statically.
+	 * FIXME: add reflection dynamic loading so that we don't care about the file names no more
 	 */
-	private static final String CURR_PATH = System.getProperty("user.dir") + "/sound";
-	
-	/**
-	 * The current folder that we are in
-	 */
-	private final File currFolder = new File(CURR_PATH);
+	String []soundFiles = {"1_s1.wav",
+	                       "1_s2.wav",
+	                       "1_s3.wav",
+	                       "2_s1.wav",
+	                       "3_s1.wav",
+	                       "3_s2.wav",
+	                       "4_s1.wav"};
 	
 	/**
 	 * Random number generator to randomize audio selection
@@ -46,7 +45,7 @@ public class Jukebox {
 	 * representing the number of rows that were cleared, and contains all the audio files 
 	 * related to that key
 	 */
-	private HashMap<Integer, ArrayList<File>> audioLibrary = new HashMap<>();
+	private HashMap<Integer, ArrayList<AudioClip>> audioLibrary = new HashMap<>();
 	
 	
 	public Jukebox() {
@@ -69,20 +68,7 @@ public class Jukebox {
 	public void play(int clearedLines) throws Exception {
 		int audiosAvailable = audioLibrary.get(clearedLines).size();
 		int audioIndex = rand.nextInt(audiosAvailable);
-		
-		/*
-		 * Gets a random audio available from clearedLines level and plays it.
-		 * This code is overly complex for the function that it does because I get
-		 * an IllegalArgumentException when I try to open the clip without an explicit cast. 
-		 * I guess there is something wrong with the *.wav files. 
-		 * I plan on fixing this code if I get the chance.
-		 */
-		AudioInputStream ais = AudioSystem.getAudioInputStream(audioLibrary.get(clearedLines).get(audioIndex));
-		AudioFormat format = ais.getFormat();
-		DataLine.Info info = new DataLine.Info(Clip.class, format);
-		Clip clip = (Clip) AudioSystem.getLine(info);
-		clip.open(ais);
-		clip.start();
+		audioLibrary.get(clearedLines).get(audioIndex).play();
 	}
 	
 	/**
@@ -90,15 +76,10 @@ public class Jukebox {
 	 */
 	private void loadAudioLibrary() {
 		/*
-		 * Get all files from the current directory
-		 */
-		File []totalAudioFiles = currFolder.listFiles();
-		
-		/*
 		 * Initializes our "audio library"
 		 */
 		for (int i = 1; i <= Piece.MAX_PIECE_DIMENSION; i++) {
-			audioLibrary.put(i, new ArrayList<File>());
+			audioLibrary.put(i, new ArrayList<AudioClip>());
 		}
 		
 		/*
@@ -106,25 +87,37 @@ public class Jukebox {
 		 *  This has a really strong coupling with the name of the files, 
 		 *  but I couln't think of anything better at the time.
 		 */
-		for (File file: totalAudioFiles) {
-			switch (file.getName().charAt(0)) {
-				case '1':
-					// One row completed audio
-					audioLibrary.get(1).add(file);
-					break;
-				case '2':
-					// Two rows completed audio
-					audioLibrary.get(2).add(file);
-					break;
-				case '3':
-					// Three rows completed audio
-					audioLibrary.get(3).add(file);
-					break;
-				case '4':
-					// Four rows completed audio
-					audioLibrary.get(4).add(file);
-					break;
+		String fileName = null;
+		try {
+			for (String file: soundFiles) {
+				fileName = "sound/" + file;
+				switch (file.charAt(0)) {
+					case '1':
+						audioLibrary.get(1).add(getAudioClip(fileName)); // One row completed audio
+						break;
+					case '2':
+						audioLibrary.get(2).add(getAudioClip(fileName)); // Two rows completed audio
+						break;
+					case '3':
+						audioLibrary.get(3).add(getAudioClip(fileName)); // Three rows completed audio
+						break;
+					case '4':
+						audioLibrary.get(4).add(getAudioClip(fileName)); // Four rows completed audio
+						break;
+				}
 			}
+		} catch (Exception e) {
+			System.err.println("Could not open files at: " + fileName);
+		}
+	}
+	
+	private AudioClip getAudioClip(String fileName) {
+		URL audioURL = Jukebox.class.getClassLoader().getResource(fileName);
+		if (audioURL != null) {
+			return Applet.newAudioClip(audioURL);
+		} else {
+			System.err.println("Couldn't find file: " + fileName);
+			return null;
 		}
 	}
 }

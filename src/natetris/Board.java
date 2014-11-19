@@ -10,7 +10,6 @@ import javax.swing.JPanel;
 /**
  * The {@code Board} class is responsible for drawing the board,  and it's pieces, on the screen, 
  * and controlling the game logic such as testing pieces location and line completeness.
- * @author natan
  *
  */
 public class Board extends JPanel {
@@ -298,6 +297,5 @@ public class Board extends JPanel {
 	private void drawTile(Piece piece, int x, int y, Graphics g, float alpha) {
 		g.setColor(piece.getGhostColor(alpha));
 		g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-		
 	}
 }

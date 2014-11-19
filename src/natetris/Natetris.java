@@ -7,14 +7,13 @@ import java.util.Random;
 
 import javax.swing.JFrame;
 
-import utils.sound.Jukebox;
 import utils.NatetrisTimer;
 import utils.WelcomeScreen;
+import utils.sound.Jukebox;
 
 /**
  * The {@code Natetris} class is responsible for the flow control of the game, setting up key listeners and
  * time control.
- * @author natan
  *
  */
 public class Natetris extends JFrame {

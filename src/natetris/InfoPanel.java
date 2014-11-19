@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.net.URL;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -18,11 +19,6 @@ import javax.swing.JPanel;
 public class InfoPanel extends JPanel {
 
   private static final long serialVersionUID = -3849098449596016270L;
-  
-  /**
-   * The complete absolute path from where the application has initialized
-   */
-  private static final String CURR_PATH = System.getProperty("user.dir") + "/img";
   
   /**
    * Fonts properties
@@ -71,7 +67,7 @@ public class InfoPanel extends JPanel {
     /*
 	 * Tries to load the image that will be shown when player scores
 	 */
-	Icon animatedGif = new ImageIcon(CURR_PATH + "/deal_with.gif");
+    Icon animatedGif = createImageIcon("img/deal_with.gif");
 	this.natanImage = new JLabel(animatedGif);
 	
 	/*
@@ -185,9 +181,28 @@ public class InfoPanel extends JPanel {
 	  g.fillRect(x, y, TILE_SIZE, TILE_SIZE);
   }
   
+  /**
+   * If the player has just scored in the game, sets up the flag 
+   * so that media can be displayed
+   */
   public void setPlayerJustScored(boolean value) {
 	  this.lastScoreTime = System.currentTimeMillis();
 	  this.hasJustScored = value;
+  }
+  
+  /**
+   * Reads an image from path
+   * @param path
+   * @return a new ImageIcon containing the image read from path
+   */
+  private ImageIcon createImageIcon(String path) {
+	 URL imgURL = InfoPanel.class.getClassLoader().getResource(path);
+	  if (imgURL != null) {
+		  return new ImageIcon(imgURL);
+	  } else {
+		  System.err.println("Could not load image in " + path);
+	  }
+	 return null;
   }
   
 }

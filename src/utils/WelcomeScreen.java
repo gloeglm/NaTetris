@@ -7,8 +7,8 @@ import java.awt.Graphics;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
@@ -19,7 +19,6 @@ import natetris.Natetris;
 /**
  * The first screen that appears when you load the game. It shows only once, 
  * at the initialization.
- * @author natan
  */
 public class WelcomeScreen extends JFrame {
 	
@@ -48,7 +47,7 @@ public class WelcomeScreen extends JFrame {
 		 */
 		BufferedImage welcomeImage = null;
 		try {
-			welcomeImage = ImageIO.read(new File(System.getProperty("user.dir") + "/img/welcome.jpg"));
+			welcomeImage = createBufferedImage("img/welcome.jpg");
 		} catch (IOException ioe) {
 			System.err.println("Could not open images: " + ioe);
 		}
@@ -86,9 +85,18 @@ public class WelcomeScreen extends JFrame {
 	}
 	
 	/**
+	 * Reads an image from path
+	 * @param path
+	 * @return a new BufferedImage containing the image read from path
+	 * @throws IOException if image could not be loaded
+	 */
+	private BufferedImage createBufferedImage(String path) throws IOException {
+		URL imgURL = WelcomeScreen.class.getClassLoader().getResource(path);
+		return ImageIO.read(imgURL);
+	}
+	
+	/**
 	 * Helper class that will contain the image displayed in our welcome screen
-	 * @author natan
-	 *
 	 */
 	private class WelcomePanel extends JPanel {
 		private static final long serialVersionUID = 6175097847507912852L;
