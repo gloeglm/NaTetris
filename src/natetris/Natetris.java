@@ -218,6 +218,8 @@ public class Natetris extends JFrame {
 		
 		timer.setPaused(true);
 		
+		jukebox.playMusic();
+		
 		while (true) {
 			/*
 			 * we will keep track on how much time was needed for the 
@@ -287,8 +289,9 @@ public class Natetris extends JFrame {
 				 * to keep our player motivated :-)
 				 */
 				try {
-					jukebox.play(clearedLines);
 					infoPanel.setPlayerJustScored(true);
+					jukebox.pausesMusic();
+					jukebox.playVoice(clearedLines);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

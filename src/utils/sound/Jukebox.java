@@ -6,6 +6,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import javax.swing.JPanel;
 
 import natetris.Piece;
 
@@ -29,7 +33,8 @@ public class Jukebox {
 	                       "2_s1.wav",
 	                       "3_s1.wav",
 	                       "3_s2.wav",
-	                       "4_s1.wav"};
+	                       "4_s1.wav",
+	                       "music.wav"};
 	
 	/**
 	 * Random number generator to randomize audio selection
@@ -46,7 +51,16 @@ public class Jukebox {
 	 * related to that key
 	 */
 	private HashMap<Integer, ArrayList<AudioClip>> audioLibrary = new HashMap<>();
+
+	/**
+	 * Index in audioLibrary of the main song of the game
+	 */
+	private AudioClip musicFile = null;
 	
+	/**
+	 * Timer that holds the music execution so player can hear sounds from audioLibrary
+	 */
+	Timer timer = new Timer();
 	
 	public Jukebox() {
 		this.rand = new Random();
@@ -65,10 +79,24 @@ public class Jukebox {
 	 * @param clearedRows
 	 * @throws Exception 
 	 */
-	public void play(int clearedLines) throws Exception {
+	public void playVoice(int clearedLines) throws Exception {
 		int audiosAvailable = audioLibrary.get(clearedLines).size();
 		int audioIndex = rand.nextInt(audiosAvailable);
 		audioLibrary.get(clearedLines).get(audioIndex).play();
+		
+	}
+
+	public void playMusic() {
+		this.musicFile.loop();
+	}
+	
+	/**
+	 * Pauses the music that is currently playing and schedules it to start 
+	 * back again in 5.5 seconds, which is the average time of sounds
+	 */
+	public void pausesMusic() {
+		this.musicFile.stop();
+		this.timer.schedule(new MusicTask(this), 5500);
 	}
 	
 	/**
@@ -104,6 +132,9 @@ public class Jukebox {
 					case '4':
 						audioLibrary.get(4).add(getAudioClip(fileName)); // Four rows completed audio
 						break;
+					default:
+						musicFile = getAudioClip(fileName); // default songs; loop song
+						break;
 				}
 			}
 		} catch (Exception e) {
@@ -116,8 +147,26 @@ public class Jukebox {
 		if (audioURL != null) {
 			return Applet.newAudioClip(audioURL);
 		} else {
-			System.err.println("Couldn't find file: " + fileName);
 			return null;
 		}
+	}
+	
+	/**
+	 * Helper class that is used to schedule the playback of the music
+	 * when another audio has ended 
+	 */
+	private class MusicTask extends TimerTask {
+		
+		private Jukebox jukebox;
+		
+		public MusicTask(Jukebox jukebox) {
+			this.jukebox = jukebox;
+		}
+		
+		@Override
+		public void run() {
+			this.jukebox.playMusic();
+		}
+	
 	}
 }
