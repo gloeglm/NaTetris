@@ -162,6 +162,7 @@ public class Natetris extends JFrame {
 						break;
 					
 					// rotate anticlockwise
+					case KeyEvent.VK_UP:
 					case KeyEvent.VK_Q:
 						if (!isGamePaused) {
 							rotateCurrentPiece((currentRotation == 0) ? 3 : currentRotation-1);
@@ -447,9 +448,20 @@ public class Natetris extends JFrame {
 		return currentRotation;
 	}
 	
-	private void setGamePaused(boolean value) {
-		timer.setPaused(value);
-		isGamePaused = value;
+	/**
+	 * Pauses or resumes the game
+	 * @param state
+	 */
+	private void setGamePaused(boolean state) {
+		// if the game is paused, stops the music
+		if (state) { 
+			jukebox.pausesMusic();
+		} else {
+			jukebox.playMusic();
+		}
+		timer.setPaused(state);
+		isGamePaused = state;
+		
 	}
 
 	public boolean isGameRunning() {
