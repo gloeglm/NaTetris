@@ -5,8 +5,12 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.net.URL;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -52,6 +56,11 @@ public class InfoPanel extends JPanel {
   private JLabel natanImage = null;
   
   /**
+   * The game logo that will be shown during the game
+   */
+  private JLabel natetrisLogo = null;
+  
+  /**
    * Gets the current time in milliseconds to manipulate natanImage's appearance
    */
   private long lastScoreTime = 0L;
@@ -63,22 +72,28 @@ public class InfoPanel extends JPanel {
   
   public InfoPanel(Natetris natetris) {
     this.natetris = natetris;
+  
+    setPreferredSize(new Dimension(Board.PANEL_WIDTH, Board.PANEL_HEIGHT));
+    setBackground(Color.BLACK);
+	setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     
     /*
-	 * Tries to load the image that will be shown when player scores
+	 * Tries to load the images that will be shown during the game
 	 */
-    Icon animatedGif = createImageIcon("img/deal_with.gif");
-	this.natanImage = new JLabel(animatedGif);
+    Icon animatedNatan = createImageIcon("img/deal_with.gif");
+	this.natanImage = new JLabel(animatedNatan);
+	Icon animatedLogo = createImageIcon("img/logo.gif");
+	this.natetrisLogo = new JLabel(animatedLogo);
 	
 	/*
 	 * The image will be displayed only when player hits a score, so it starts out as hidden
 	 */
-	natanImage.setVisible(false);	
 	this.add(natanImage);
+	this.add(Box.createVerticalStrut(300)); // distance between images
+	this.add(natetrisLogo);
 	
-	setLayout(new FlowLayout(FlowLayout.LEFT));
-    setPreferredSize(new Dimension(Board.PANEL_WIDTH, Board.PANEL_HEIGHT));
-    setBackground(Color.BLACK);
+	natanImage.setVisible(false);
+	natetrisLogo.setVisible(true);
   }
   
   @Override
@@ -117,15 +132,12 @@ public class InfoPanel extends JPanel {
     offset += SPACE_BETWEEN_STRINGS;
     
     g.setFont(SMALL_FONT);
-    String movePointersTip = "\tMove pieces using the pointers keys, OR:";
-    String moveLeftTip = "\tmove left by pressing 'A'";
-    String moveRightTip = "\tmove right by pressing 'D'";
-    String moveDownTip = "\tmove down by pressing 'S'";
-    g.drawString(movePointersTip, 0, offset += SPACE_BETWEEN_STRINGS);
-    g.drawString(moveLeftTip, 0, offset += SPACE_BETWEEN_STRINGS);
-    g.drawString(moveRightTip, 0, offset += SPACE_BETWEEN_STRINGS);
-    g.drawString(moveDownTip, 0, offset += SPACE_BETWEEN_STRINGS);
-
+    
+    g.drawString("\tRotate pieces with 'Q' or 'E', or up arrow", 0, offset += SPACE_BETWEEN_STRINGS);
+    g.drawString("\tMove pieces using the pointers keys, OR:", 0, offset += SPACE_BETWEEN_STRINGS);
+    g.drawString("\t> move left by pressing 'A'", 0, offset += SPACE_BETWEEN_STRINGS);
+    g.drawString("\t> move right by pressing 'D'", 0, offset += SPACE_BETWEEN_STRINGS);
+    g.drawString("\t> move down by pressing 'S'", 0, offset += SPACE_BETWEEN_STRINGS);
   }
   
   /**

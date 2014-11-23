@@ -142,6 +142,12 @@ public class Jukebox {
 		}
 	}
 	
+	/**
+	 * Gets an audioClip to be played. If no file was found with the given
+	 * fileName parameter, the method returns <b>null</b>.
+	 * @param fileName 
+	 * @return an AudioClip associated with fileName
+	 */
 	private AudioClip getAudioClip(String fileName) {
 		URL audioURL = Jukebox.class.getClassLoader().getResource(fileName);
 		if (audioURL != null) {

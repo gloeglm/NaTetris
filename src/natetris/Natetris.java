@@ -454,7 +454,7 @@ public class Natetris extends JFrame {
 	 */
 	private void setGamePaused(boolean state) {
 		// if the game is paused, stops the music
-		if (state) { 
+		if (state == true) { 
 			jukebox.pausesMusic();
 		} else {
 			jukebox.playMusic();
