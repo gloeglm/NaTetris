@@ -95,8 +95,9 @@ public class Natetris extends JFrame {
 	 * is replaced with the faster speed whenever the player hits the accelerating 
 	 * key, and then gets back to normal whenever the player releases such key. 
 	 */
-	private static float defaultSpeed = 1.0f;
-	private static float fastSpeed = 25.0f;
+	private final float DEFAULT_SPEED = 1.0f;
+	private float defaultSpeed = DEFAULT_SPEED;
+	private float fastSpeed = 25.0f;
 	
 	/**
 	 * Random generator
@@ -352,6 +353,7 @@ public class Natetris extends JFrame {
 		this.board.clear();
 		this.timer.reset();
 		this.fallingCooldown = 0;
+		this.defaultSpeed = DEFAULT_SPEED;
 		spawnNewPiece();
 	}
 	
