@@ -6,3 +6,7 @@ This is a Tetris-clone-hobbie-project made entirely in Java, using only javax.sw
 Also, they're entirely in portuguese, as this game was made having only my friends in mind. :-)
 
 Feel free to make any changes in case you see the need. I do not think there are any issues around it right now, except for the sound (the audioclips overlap each other when you score too fast), which I consider more of a feature than a bug ;-) kthx
+
+This is what the game looks like right now:
+
+![sample image](https://raw.githubusercontent.com/Streppel/NaTetris/master/img/Selection_055.png)
