@@ -30,17 +30,6 @@ public class Natetris extends JFrame {
 	 */
 	public static final int PIECES_COUNT = Piece.values().length;
 	
-	
-	/**
-	 * The game board
-	 */
-	private Board board;
-	
-	/**
-	 *	The information panel, containing general info for the player
-	 */
-	private InfoPanel infoPanel;
-	
 	/**
 	 * Game control variables.
 	 * isNewGame represents if the game hasn't started yet. Occurs only when the game is launched
@@ -48,21 +37,6 @@ public class Natetris extends JFrame {
 	private boolean isFirstGame;
 	private boolean isGamePaused;
 	private boolean isGameOver;
-	
-	/**
-	 * The player's current score 
-     */
-	private int score;
-	
-	/**
-	 * The current piece that is falling down
-	 */
-	private Piece currentPiece;
-	
-	/**
-	 * The next piece that will be on the game 
-	 */
-	private Piece nextPiece;
 	
 	/**
 	 * The column that the current piece is located
@@ -100,14 +74,19 @@ public class Natetris extends JFrame {
 	private float fastSpeed = 25.0f;
 	
 	/**
-	 * Random generator
-	 */
-	private Random random;
-	
-	/**
 	 * The game's sound system handler
 	 */
 	private Jukebox jukebox;
+	
+	/**
+	 * Common use variables
+	 */
+	private Board board;
+	private Piece currentPiece;
+	private Piece nextPiece;
+	private int score;
+	private Random random;
+	private InfoPanel infoPanel; // contains general info for the player
 	
 	/**
 	 * Creates a new instance of the game. 
@@ -115,9 +94,6 @@ public class Natetris extends JFrame {
 	 * adds a key listener to it.
 	 */
 	public Natetris() {
-		/*
-		 * basic window properties
-		 */
 		super("NaTetris!");
 		setLayout(new BorderLayout());
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -217,11 +193,8 @@ public class Natetris extends JFrame {
 		this.random = new Random();
 		this.isFirstGame = true;
 		this.timer = new NatetrisTimer(defaultSpeed);
-		
 		timer.setPaused(true);
-		
 		jukebox.playMusic();
-		
 		while (true) {
 			/*
 			 * we will keep track on how much time was needed for the 
